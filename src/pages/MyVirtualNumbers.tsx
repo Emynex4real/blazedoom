@@ -105,7 +105,7 @@ export default function MyVirtualNumbers() {
           placeholder="Search by phone, service, country..."
           value={query}
           onChange={e => setQuery(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 text-[13px] rounded-xl border border-[#e5e5e5] dark:border-[#262626] bg-white dark:bg-[#1a1a28] text-[#0a0a0a] dark:text-white placeholder-[#a3a3a3] outline-none focus:border-[#8b5cf6] transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 text-[13px] rounded-xl border border-[#e5e5e5] dark:border-[#262626] bg-white dark:bg-[#1a1a28] text-[#0a0a0a] dark:text-white placeholder-[#a3a3a3] outline-none focus:border-primary transition-colors"
         />
       </div>
 
@@ -148,7 +148,7 @@ export default function MyVirtualNumbers() {
               Go to{' '}
               <button
                 onClick={() => navigate('/order-virtual-number')}
-                className="text-[#8b5cf6] hover:underline font-medium"
+                className="text-primary hover:underline font-medium"
               >
                 New Order
               </button>{' '}

@@ -116,8 +116,8 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
           >
             {/* Brand mark — gradient like jjj brief-mark */}
             <span
-              className="w-8 h-8 rounded-lg shrink-0 grid place-items-center text-white shadow-[0_4px_14px_-4px_rgba(139,92,246,0.7)]"
-              style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, rgba(139,92,246,0.55) 100%)' }}
+              className="w-8 h-8 rounded-lg shrink-0 grid place-items-center text-white shadow-[0_4px_14px_-4px_rgba(56,189,248,0.7)]"
+              style={{ background: 'linear-gradient(135deg, #38bdf8 0%, rgba(56,189,248,0.55) 100%)' }}
             >
               <Zap size={15} strokeWidth={2.5} />
             </span>
@@ -169,7 +169,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
             >
               <div
                 className="w-8 h-8 rounded-full shrink-0 grid place-items-center text-white text-[11px] font-bold"
-                style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, rgba(139,92,246,0.6) 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #38bdf8 0%, rgba(56,189,248,0.6) 100%)' }}
               >
                 {initials}
               </div>

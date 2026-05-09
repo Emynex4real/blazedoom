@@ -149,7 +149,7 @@ export default function OrderVirtualNumber() {
               setCountryQuery('');
             }}
             className="px-6 py-2.5 rounded-xl text-sm font-medium text-white"
-            style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)' }}
           >
             Order Another Number
           </button>
@@ -224,7 +224,7 @@ export default function OrderVirtualNumber() {
               placeholder="Search service..."
               value={serviceQuery}
               onChange={e => setServiceQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 text-[13px] rounded-lg border border-[#e5e5e5] dark:border-[#262626] bg-[#fafafa] dark:bg-[#111] text-[#0a0a0a] dark:text-white placeholder-[#a3a3a3] outline-none focus:border-[#8b5cf6]"
+              className="w-full pl-8 pr-3 py-2 text-[13px] rounded-lg border border-[#e5e5e5] dark:border-[#262626] bg-[#fafafa] dark:bg-[#111] text-[#0a0a0a] dark:text-white placeholder-[#a3a3a3] outline-none focus:border-[#38bdf8]"
             />
           </div>
 
@@ -239,7 +239,7 @@ export default function OrderVirtualNumber() {
                 <ServiceIcon id={svc.id} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[13.5px] font-semibold text-[#0a0a0a] dark:text-white leading-tight">{svc.name}</p>
-                  <p className="text-[11.5px] text-[#8b5cf6] mt-0.5">{svc.category}</p>
+                  <p className="text-[11.5px] text-[#38bdf8] mt-0.5">{svc.category}</p>
                   <p className="text-[11px] text-[#a3a3a3] mt-0.5">{svc.available} available</p>
                 </div>
                 <div className="text-right shrink-0">
@@ -265,7 +265,7 @@ export default function OrderVirtualNumber() {
           <h2 className="text-base font-semibold text-[#0a0a0a] dark:text-white mb-0.5">Select a Country</h2>
           <p className="text-[13px] text-[#737373] mb-4">
             Available countries for{' '}
-            <span className="text-[#8b5cf6] font-medium">{selectedService?.name}</span>
+            <span className="text-[#38bdf8] font-medium">{selectedService?.name}</span>
           </p>
 
           {/* Search */}
@@ -276,7 +276,7 @@ export default function OrderVirtualNumber() {
               placeholder="Search country..."
               value={countryQuery}
               onChange={e => setCountryQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 text-[13px] rounded-lg border border-[#e5e5e5] dark:border-[#262626] bg-[#fafafa] dark:bg-[#111] text-[#0a0a0a] dark:text-white placeholder-[#a3a3a3] outline-none focus:border-[#8b5cf6]"
+              className="w-full pl-8 pr-3 py-2 text-[13px] rounded-lg border border-[#e5e5e5] dark:border-[#262626] bg-[#fafafa] dark:bg-[#111] text-[#0a0a0a] dark:text-white placeholder-[#a3a3a3] outline-none focus:border-[#38bdf8]"
             />
           </div>
 
@@ -291,7 +291,7 @@ export default function OrderVirtualNumber() {
                 <span className="text-2xl shrink-0 w-9 text-center">{c.flag}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13.5px] font-semibold text-[#0a0a0a] dark:text-white leading-tight">{c.name}</p>
-                  <p className="text-[11.5px] text-[#8b5cf6] mt-0.5">{c.slug}</p>
+                  <p className="text-[11.5px] text-[#38bdf8] mt-0.5">{c.slug}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-[14px] font-bold text-[#0a0a0a] dark:text-white">{c.rate}%</p>
@@ -311,9 +311,9 @@ export default function OrderVirtualNumber() {
           <h2 className="text-base font-semibold text-[#0a0a0a] dark:text-white mb-0.5">Select a Provider</h2>
           <p className="text-[13px] text-[#737373] mb-4">
             Choose a provider for{' '}
-            <span className="text-[#8b5cf6] font-medium">{selectedService?.name}</span>
+            <span className="text-[#38bdf8] font-medium">{selectedService?.name}</span>
             {' '}in{' '}
-            <span className="text-[#8b5cf6] font-medium">{selectedCountry?.name}</span>
+            <span className="text-[#38bdf8] font-medium">{selectedCountry?.name}</span>
           </p>
 
           <div className="divide-y divide-[#f0f0f0] dark:divide-[#1c1c1c]">
@@ -324,7 +324,7 @@ export default function OrderVirtualNumber() {
                 className="w-full flex items-center gap-3 py-3 px-1 hover:bg-[#fafafa] dark:hover:bg-[#111] transition-colors text-left"
               >
                 <div className="w-9 h-9 rounded-lg shrink-0 grid place-items-center bg-[#f0f0f0] dark:bg-[#262626]">
-                  <div className="w-4 h-4 rounded-full bg-[#8b5cf6]/30" />
+                  <div className="w-4 h-4 rounded-full bg-[#38bdf8]/30" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13.5px] font-semibold text-[#0a0a0a] dark:text-white leading-tight">{p.name}</p>
@@ -333,7 +333,7 @@ export default function OrderVirtualNumber() {
                 <div className="text-right shrink-0">
                   <p className="text-[14px] font-bold text-[#0a0a0a] dark:text-white">{p.successRate}%</p>
                   <p className="text-[11px] text-green-500 leading-tight">Success Rate</p>
-                  <p className="text-[12px] font-semibold text-[#8b5cf6] mt-0.5">${p.price.toFixed(2)}</p>
+                  <p className="text-[12px] font-semibold text-[#38bdf8] mt-0.5">${p.price.toFixed(2)}</p>
                 </div>
               </button>
             ))}
@@ -367,7 +367,7 @@ export default function OrderVirtualNumber() {
           <button
             onClick={() => setOrderSuccess(true)}
             className="w-full py-3 rounded-xl text-[14px] font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)' }}
           >
             Confirm Order
           </button>
