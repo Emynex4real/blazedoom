@@ -9,10 +9,12 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const publicNav = [
-  { to: '/',                label: 'Home',            icon: Home },
-  { to: '/login',           label: 'Login',           icon: LogIn },
-  { to: '/create-account',  label: 'Create Account',  icon: UserPlus },
-  { to: '/forgot-password', label: 'Forgot Password', icon: KeyRound },
+  { to: '/',                       label: 'Home',                 icon: Home },
+  { to: '/login',                  label: 'Login',                icon: LogIn },
+  { to: '/create-account',         label: 'Create Account',       icon: UserPlus },
+  { to: '/forgot-password',        label: 'Forgot Password',      icon: KeyRound },
+  { to: '/order-virtual-number',   label: 'Order Virtual Number', icon: Phone },
+  { to: '/my-virtual-numbers',     label: 'My Virtual Numbers',   icon: List },
 ];
 
 const toolNav = [
