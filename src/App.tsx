@@ -20,6 +20,8 @@ import ReceiptDetail from './pages/ReceiptDetail';
 import ReceiptHistory from './pages/ReceiptHistory';
 import ReceiptView from './pages/ReceiptView';
 import Settings from './pages/Settings';
+import OrderVirtualNumber from './pages/OrderVirtualNumber';
+import MyVirtualNumbers from './pages/MyVirtualNumbers';
 
 // Tool routes — redirect to /login if not authenticated
 function ProtectedRoute() {
@@ -65,6 +67,8 @@ export default function App() {
               <Route path="/wallet-flashing"          element={<WalletFlashing />} />
               <Route path="/wallet-flashing/my-list" element={<MyFlashWallets />} />
               <Route path="/fund-wallet"           element={<FundWallet />} />
+              <Route path="/order-virtual-number" element={<OrderVirtualNumber />} />
+              <Route path="/my-virtual-numbers"  element={<MyVirtualNumbers />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

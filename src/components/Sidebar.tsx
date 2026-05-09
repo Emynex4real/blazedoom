@@ -3,7 +3,7 @@ import {
   Home, LogIn, UserPlus, KeyRound,
   LayoutDashboard, Headphones, Video, MapPin,
   Wallet, Receipt, CreditCard, History,
-  Zap, X, ChevronLeft, ChevronRight, LogOut, Settings,
+  Zap, X, ChevronLeft, ChevronRight, LogOut, Settings, Phone, List,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -23,7 +23,9 @@ const toolNav = [
   { to: '/wallet-flashing',    label: 'Wallet Flashing',   icon: Wallet },
   { to: '/receipt-generator', label: 'Receipts Generator', icon: Receipt },
   { to: '/receipt-history',   label: 'Receipts History',  icon: History },
-  { to: '/fund-wallet',       label: 'Fund Wallet',        icon: CreditCard },
+  { to: '/fund-wallet',            label: 'Fund Wallet',          icon: CreditCard },
+  { to: '/order-virtual-number',  label: 'Order Virtual Number', icon: Phone },
+  { to: '/my-virtual-numbers',    label: 'My Virtual Numbers',   icon: List  },
 ];
 
 interface Props {
