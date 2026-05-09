@@ -337,7 +337,7 @@ export default function PlatformBilling() {
                     </div>
                     <div>
                       <p className="font-bold text-sm text-gray-900 dark:text-white mb-0.5">{perk.title}</p>
-                      <p className="text-xs text-gray-500 leading-relaxed">{perk.desc}</p>
+                      <p className="text-xs text-gray-500 leading-relaxed">{perk.desc}</p> 
                     </div>
                   </div>
                 ))}

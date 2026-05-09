@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RefreshCw, Download, Search, Smartphone } from 'lucide-react';
-import PageHeader from '../components/PageHeader';
 
 type Status = 'ALL' | 'PENDING' | 'RECEIVED' | 'COMPLETED' | 'CANCELLED' | 'TIMEOUT' | 'BANNED';
 

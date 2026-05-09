@@ -350,9 +350,9 @@ export default function OrderVirtualNumber() {
           <div className="space-y-3 mb-6">
             {[
               { label: 'Service',  value: selectedService?.name  ?? '—' },
-              { label: 'Country',  value: `${selectedCountry?.flag} ${selectedCountry?.name}` ?? '—' },
+              { label: 'Country',  value: selectedCountry ? `${selectedCountry.flag} ${selectedCountry.name}` : '—' },
               { label: 'Provider', value: selectedProvider?.name ?? '—' },
-              { label: 'Price',    value: `$${selectedProvider?.price.toFixed(2)}` ?? '—' },
+              { label: 'Price',    value: selectedProvider ? `$${selectedProvider.price.toFixed(2)}` : '—' },
             ].map(row => (
               <div
                 key={row.label}
