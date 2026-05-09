@@ -2,7 +2,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, LogIn, UserPlus, KeyRound,
   LayoutDashboard, Headphones, Video, MapPin,
-  Wallet, Receipt, CreditCard, ArrowLeftRight,
+  Wallet, Receipt, CreditCard, History,
   Zap, X, ChevronLeft, ChevronRight, LogOut, Settings,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -20,10 +20,10 @@ const toolNav = [
   { to: '/support-sites',          label: 'Support Page',          icon: Headphones },
   { to: '/consignment-video',      label: 'Consignment Video',     icon: Video },
   { to: '/tracking-sites',         label: 'Tracking Page',         icon: MapPin },
-  { to: '/wallet-flashing',        label: 'Wallet Flashing',       icon: Wallet },
-  { to: '/receipt-generator',      label: 'Receipts Generator',    icon: Receipt },
-  { to: '/transaction-generator',  label: 'Transaction Generator', icon: ArrowLeftRight },
-  { to: '/fund-wallet',            label: 'Fund Wallet',           icon: CreditCard },
+  { to: '/wallet-flashing',    label: 'Wallet Flashing',   icon: Wallet },
+  { to: '/receipt-generator', label: 'Receipts Generator', icon: Receipt },
+  { to: '/receipt-history',   label: 'Receipts History',  icon: History },
+  { to: '/fund-wallet',       label: 'Fund Wallet',        icon: CreditCard },
 ];
 
 interface Props {

@@ -13,6 +13,13 @@ import ConsignmentVideo from './pages/ConsignmentVideo';
 import TransactionGenerator from './pages/TransactionGenerator';
 import WalletFlashing from './pages/WalletFlashing';
 import FundWallet from './pages/FundWallet';
+import SupportSiteDetail from './pages/SupportSiteDetail';
+import SupportSiteCreate from './pages/SupportSiteCreate';
+import MyFlashWallets from './pages/MyFlashWallets';
+import ReceiptDetail from './pages/ReceiptDetail';
+import ReceiptHistory from './pages/ReceiptHistory';
+import ReceiptView from './pages/ReceiptView';
+import Settings from './pages/Settings';
 
 // Tool routes — redirect to /login if not authenticated
 function ProtectedRoute() {
@@ -45,11 +52,18 @@ export default function App() {
             {/* Protected tool routes — redirect to /login if not logged in */}
             <Route element={<ProtectedRoute />}>
               <Route path="/tracking-sites"        element={<TrackingSites />} />
-              <Route path="/support-sites"         element={<SupportSites />} />
-              <Route path="/receipt-generator"     element={<ReceiptGenerator />} />
+              <Route path="/support-sites"           element={<SupportSites />} />
+              <Route path="/support-sites/create"    element={<SupportSiteCreate />} />
+              <Route path="/support-sites/:platform" element={<SupportSiteDetail />} />
+              <Route path="/receipt-generator"             element={<ReceiptGenerator />} />
+              <Route path="/receipt-generator/:platform"  element={<ReceiptDetail />} />
+              <Route path="/receipt-history"              element={<ReceiptHistory />} />
+              <Route path="/receipt-view/:id"             element={<ReceiptView />} />
+              <Route path="/settings"                     element={<Settings />} />
               <Route path="/consignment-video"     element={<ConsignmentVideo />} />
               <Route path="/transaction-generator" element={<TransactionGenerator />} />
-              <Route path="/wallet-flashing"       element={<WalletFlashing />} />
+              <Route path="/wallet-flashing"          element={<WalletFlashing />} />
+              <Route path="/wallet-flashing/my-list" element={<MyFlashWallets />} />
               <Route path="/fund-wallet"           element={<FundWallet />} />
             </Route>
 

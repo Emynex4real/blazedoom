@@ -1,169 +1,87 @@
 import { useState } from 'react';
-import { Receipt, Plus, Download, Copy, CheckCircle2, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, Receipt } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
-const platforms = ['Amazon','eBay','Walmart','Binance','Bybit','PayPal','Cash App','Venmo','Zelle','Coinbase','Trust Wallet','Crypto.com'];
-
-interface Item { name: string; qty: string; price: string }
+const PLATFORMS = [
+  { slug: 'binance',      name: 'Binance',      color: '#F0B90B', bg: '#FFFBEB', initial: 'B' },
+  { slug: 'cashapp',      name: 'Cashapp',       color: '#00C244', bg: '#ECFDF5', initial: '$' },
+  { slug: 'trust-wallet', name: 'Trust Wallet',  color: '#3375BB', bg: '#EFF6FF', initial: 'T' },
+  { slug: 'coinbase',     name: 'Coinbase',      color: '#0052FF', bg: '#EEF2FF', initial: 'C' },
+  { slug: 'paypal',       name: 'PayPal',        color: '#003087', bg: '#EEF2FF', initial: 'P' },
+  { slug: 'bybit',        name: 'Bybit',         color: '#F7A600', bg: '#FFFBEB', initial: 'B' },
+  { slug: 'gcash',        name: 'Gcash',         color: '#007DFE', bg: '#EFF6FF', initial: 'G' },
+  { slug: 'bitcoin',      name: 'Bitcoin',       color: '#F7931A', bg: '#FFF7ED', initial: '₿' },
+  { slug: 'okx',          name: 'OKX Wallet',    color: '#1C1C1C', bg: '#F3F4F6', initial: 'O' },
+  { slug: 'zelle',        name: 'Zelle',         color: '#6D1ED4', bg: '#F5F3FF', initial: 'Z' },
+  { slug: 'venmo',        name: 'Venmo',         color: '#3D95CE', bg: '#EFF6FF', initial: 'V' },
+  { slug: 'roqqu',        name: 'Roqqu',         color: '#7B2FBE', bg: '#F5F3FF', initial: 'R' },
+];
 
 export default function ReceiptGenerator() {
-  const [form, setForm]   = useState({ platform: '', orderId: '', date: '', customerName: '' });
-  const [items, setItems] = useState<Item[]>([{ name: '', qty: '1', price: '' }]);
-  const [generated, setGenerated] = useState(false);
-  const [copied, setCopied]       = useState(false);
+  const navigate = useNavigate();
+  const [search, setSearch] = useState('');
 
-  const total = items.reduce((s, i) => s + (parseFloat(i.price) || 0) * (parseInt(i.qty) || 0), 0);
-  const addItem = () => setItems(p => [...p, { name: '', qty: '1', price: '' }]);
-  const removeItem = (idx: number) => setItems(p => p.filter((_, i) => i !== idx));
-  const upd = (idx: number, f: keyof Item, v: string) =>
-    setItems(p => p.map((it, i) => i === idx ? { ...it, [f]: v } : it));
+  const filtered = PLATFORMS.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
+      <PageHeader title="Receipt Generator" subtitle="Create realistic receipts in just few clicks" />
 
-      <PageHeader title="Receipt Generator" subtitle="Generate realistic receipts for any platform" />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-        {/* Form */}
-        <div className="anim-up d-1 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5">
-          <p className="font-semibold text-sm text-gray-900 dark:text-white mb-4">Receipt Details</p>
-
-          <div className="flex flex-col gap-4">
-            {/* Platform grid */}
+      <div className="anim-up d-1">
+        {/* Section header */}
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Generate Receipts</h2>
+            <p className="text-[12.5px] text-gray-500 dark:text-gray-400">Select a platform to generate legitimate receipt</p>
+          </div>
+          <div className="hidden sm:flex items-center gap-2.5 px-3 py-2 bg-violet-600 text-white rounded-xl shadow-sm shadow-violet-300/40">
+            <Receipt size={14} />
             <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Platform</label>
-              <div className="grid grid-cols-3 gap-1.5">
-                {platforms.map(p => (
-                  <button key={p} onClick={() => setForm(f => ({ ...f, platform: p }))}
-                    className={`py-1.5 rounded-lg border text-[11px] font-semibold transition-all
-                      ${form.platform === p
-                        ? 'border-amber-400 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:border-amber-500/40 dark:text-amber-400'
-                        : 'border-gray-200 dark:border-[#2a2a3d] text-gray-500 dark:text-gray-400 hover:border-gray-300'
-                      }`}>
-                    {p}
-                  </button>
-                ))}
-              </div>
+              <p className="text-[12px] font-semibold leading-none">Generate Receipts</p>
+              <p className="text-white/70 text-[10px] leading-none mt-0.5">100% Realistic Design</p>
             </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Order ID</label>
-                <input className="field" placeholder="ORD-1234567"
-                  value={form.orderId} onChange={e => setForm(f => ({ ...f, orderId: e.target.value }))} />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Date</label>
-                <input type="date" className="field"
-                  value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Customer Name</label>
-              <input className="field" placeholder="John Doe"
-                value={form.customerName} onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))} />
-            </div>
-
-            {/* Line items */}
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">Items</label>
-                <button onClick={addItem}
-                  className="flex items-center gap-1 text-xs font-semibold text-primary hover:opacity-70 transition-opacity">
-                  <Plus size={12} /> Add row
-                </button>
-              </div>
-              <div className="flex flex-col gap-2">
-                {items.map((it, i) => (
-                  <div key={i} className="grid gap-1.5" style={{ gridTemplateColumns: '1fr 48px 72px 28px' }}>
-                    <input className="field" style={{ fontSize: 12 }} placeholder="Item name"
-                      value={it.name} onChange={e => upd(i, 'name', e.target.value)} />
-                    <input className="field text-center" style={{ fontSize: 12, padding: '9px 6px' }} placeholder="Qty" type="number" min="1"
-                      value={it.qty} onChange={e => upd(i, 'qty', e.target.value)} />
-                    <input className="field" style={{ fontSize: 12 }} placeholder="$0.00"
-                      value={it.price} onChange={e => upd(i, 'price', e.target.value)} />
-                    {items.length > 1 && (
-                      <button onClick={() => removeItem(i)}
-                        className="flex items-center justify-center text-gray-300 hover:text-red-400 transition-colors">
-                        <Trash2 size={13} />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Total */}
-            <div className="flex justify-between items-center px-3 py-2.5 bg-gray-50 dark:bg-[#222232] rounded-lg border border-gray-100 dark:border-[#2a2a3d]">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Total</span>
-              <span className="font-display text-base font-extrabold text-gray-900 dark:text-white">${total.toFixed(2)}</span>
-            </div>
-
-            <button onClick={() => setGenerated(true)}
-              className="w-full py-2.5 bg-primary text-white text-sm font-semibold rounded-lg
-                hover:opacity-90 active:scale-[0.98] transition-all shadow-sm shadow-primary/30">
-              Generate Receipt
-            </button>
           </div>
         </div>
 
-        {/* Preview */}
-        <div className="anim-up d-2 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5">
-          <div className="flex justify-between items-center mb-4">
-            <p className="font-semibold text-sm text-gray-900 dark:text-white">Preview</p>
-            {generated && (
-              <div className="flex gap-2">
-                <button onClick={() => { setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-[#2a2a3d] text-xs font-semibold text-gray-600 dark:text-gray-400 hover:border-gray-300 transition-colors">
-                  {copied ? <CheckCircle2 size={12} className="text-green-500" /> : <Copy size={12} />} Copy
-                </button>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-semibold hover:opacity-90 transition-opacity">
-                  <Download size={12} /> Download
-                </button>
-              </div>
-            )}
-          </div>
+        {/* Search */}
+        <div className="relative mb-6">
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            className="field pl-10"
+            placeholder="Search wallets..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
 
-          {generated ? (
-            <div className="border border-gray-100 dark:border-[#2a2a3d] rounded-xl overflow-hidden font-mono">
-              <div className="bg-gray-900 px-5 py-4 text-center text-white">
-                <p className="font-display text-lg font-extrabold">{form.platform || 'Platform'}</p>
-                <p className="text-[10px] text-white/40 mt-0.5">Order Confirmation</p>
-              </div>
-              <div className="p-4 bg-white dark:bg-[#1a1a28] flex flex-col gap-1.5">
-                {[
-                  ['Order ID',  form.orderId || 'ORD-0000000'],
-                  ['Date',      form.date || new Date().toLocaleDateString()],
-                  ['Customer',  form.customerName || 'Customer Name'],
-                ].map(([k, v]) => (
-                  <div key={k} className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                    <span>{k}</span><span className="font-semibold text-gray-800 dark:text-gray-200">{v}</span>
-                  </div>
-                ))}
-                <div className="border-t border-dashed border-gray-200 dark:border-[#2a2a3d] my-2" />
-                {items.map((it, i) => (
-                  <div key={i} className="flex justify-between text-xs">
-                    <span className="text-gray-700 dark:text-gray-300">{it.name || 'Item'} × {it.qty}</span>
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">
-                      ${((parseFloat(it.price) || 0) * (parseInt(it.qty) || 0)).toFixed(2)}
-                    </span>
-                  </div>
-                ))}
-                <div className="border-t border-gray-200 dark:border-[#2a2a3d] mt-2 pt-2 flex justify-between">
-                  <span className="text-sm font-bold text-gray-900 dark:text-white">Total</span>
-                  <span className="font-display text-base font-extrabold text-gray-900 dark:text-white">${total.toFixed(2)}</span>
+        {/* Platform grid */}
+        {filtered.length === 0 ? (
+          <p className="text-center text-sm text-gray-400 py-12">No platforms found.</p>
+        ) : (
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+            {filtered.map((p, i) => (
+              <button
+                key={p.slug}
+                onClick={() => navigate(`/receipt-generator/${p.slug}`)}
+                style={{ animationDelay: `${i * 40}ms` }}
+                className="anim-up flex flex-col items-center gap-2.5 p-4 rounded-2xl border border-gray-100 dark:border-[#2a2a3d] bg-white dark:bg-[#1a1a28] hover:border-gray-300 dark:hover:border-[#3a3a5d] hover:shadow-md transition-all"
+              >
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-[18px] font-black shadow-sm"
+                  style={{ background: p.bg, color: p.color }}
+                >
+                  {p.initial}
                 </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center min-h-64 gap-3 text-center">
-              <Receipt size={36} className="text-gray-200 dark:text-gray-700" strokeWidth={1.5} />
-              <p className="text-xs text-gray-400 max-w-44">Fill in the receipt details and click "Generate" to preview.</p>
-            </div>
-          )}
-        </div>
+                <span className="text-[11px] font-medium text-gray-700 dark:text-gray-300 text-center leading-tight">
+                  {p.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

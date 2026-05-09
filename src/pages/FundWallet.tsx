@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { CreditCard, Bitcoin, Wallet, CheckCircle2, Lock, ChevronRight, Copy } from 'lucide-react';
+import { CreditCard, Bitcoin, Wallet, CheckCircle2, Lock, ChevronRight, Copy, ShieldCheck, Zap, Gift, QrCode } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
-const methods = [
+const METHODS = [
   { id: 'card',   label: 'Credit / Debit Card', icon: CreditCard, desc: 'Visa, Mastercard, Amex' },
-  { id: 'crypto', label: 'Cryptocurrency',      icon: Bitcoin,    desc: 'BTC, ETH, USDT & more' },
-  { id: 'wallet', label: 'E-Wallet',            icon: Wallet,     desc: 'PayPal, CashApp, Venmo' },
+  { id: 'crypto', label: 'Cryptocurrency',      icon: Bitcoin,    desc: 'BTC, ETH, USDC' },
+  { id: 'wallet', label: 'Digital Wallets',     icon: Wallet,     desc: 'Apple Pay, Google Pay' },
 ];
 
-const packages = [
+const CREDIT_PACKAGES = [
   { amount: 10,   bonus: 0,   label: 'Starter' },
   { amount: 50,   bonus: 5,   label: 'Basic',   popular: true },
   { amount: 100,  bonus: 15,  label: 'Standard' },
@@ -17,273 +17,334 @@ const packages = [
   { amount: 1000, bonus: 300, label: 'Enterprise' },
 ];
 
-const cryptoAddr: Record<string, string> = {
+const CRYPTO_RATES: Record<string, number> = { BTC: 65000, ETH: 3200, USDC: 1 };
+const CRYPTO_ADDR: Record<string, string> = {
   BTC:  'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
   ETH:  '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-  USDT: 'TGBDqfJQTe1Rmk5y3mFmW6rPBxJYVJ3aqE',
+  USDC: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
 };
 
-export default function FundWallet() {
+export default function PlatformBilling() {
   const [method, setMethod] = useState('card');
-  const [pkg,    setPkg]    = useState(50);
-  const [custom, setCustom] = useState('');
-  const [coin,   setCoin]   = useState('BTC');
-  const [card,   setCard]   = useState({ number: '', name: '', expiry: '', cvv: '' });
-  const [step,   setStep]   = useState<'select' | 'pay' | 'success'>('select');
+  const [selectedPkg, setSelectedPkg] = useState(50);
+  const [customAmount, setCustomAmount] = useState('');
+  const [coin, setCoin] = useState('USDC');
+  const [card, setCard] = useState({ number: '', name: '', expiry: '', cvv: '' });
+  const [step, setStep] = useState<'select' | 'checkout' | 'success'>('select');
   const [copied, setCopied] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const final = custom ? parseFloat(custom) || 0 : pkg;
-  const bonus = packages.find(p => p.amount === pkg)?.bonus || 0;
-  const copy  = (t: string) => { navigator.clipboard.writeText(t); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const finalAmount = customAmount ? parseFloat(customAmount) || 0 : selectedPkg;
+  const bonusAmount = CREDIT_PACKAGES.find(p => p.amount === selectedPkg)?.bonus || 0;
+  
+  const handleCopy = (text: string) => { 
+    navigator.clipboard.writeText(text); 
+    setCopied(true); 
+    setTimeout(() => setCopied(false), 2000); 
+  };
+
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2, 4);
+    setCard(c => ({ ...c, expiry: val }));
+  };
+
+  const handlePayment = () => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setIsProcessing(false);
+      setStep('success');
+    }, 1500);
+  };
+
+  const isCardValid = card.number.length >= 15 && card.name.length > 2 && card.expiry.length === 5 && card.cvv.length >= 3;
 
   if (step === 'success') return (
-    <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center min-h-[70vh]">
-      <div className="anim-up bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-2xl p-10 text-center w-full max-w-sm shadow-sm">
-        <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-500/15 flex items-center justify-center mx-auto mb-4">
-          <CheckCircle2 size={32} className="text-green-600" />
+    <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center min-h-[70vh] animate-in fade-in duration-500">
+      <div className="bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-3xl p-10 text-center w-full max-w-sm shadow-xl shadow-green-500/5">
+        <div className="w-20 h-20 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center mx-auto mb-6 ring-8 ring-green-50 dark:ring-green-500/5">
+          <CheckCircle2 size={40} className="text-green-500" />
         </div>
-        <h2 className="font-display text-xl font-extrabold text-gray-900 dark:text-white mb-1.5">Payment Successful!</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-          ${final.toFixed(2)}{bonus > 0 ? ` + $${bonus} bonus` : ''} added to your wallet.
+        <h2 className="font-display text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">Payment Verified</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+          Your transaction was successful. The credits have been applied to your workspace.
         </p>
-        <div className="bg-gray-900 rounded-xl px-5 py-4 text-white mb-6">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest mb-1">New Balance</p>
-          <p className="font-display text-4xl font-black">${(final + bonus).toFixed(2)}</p>
+        <div className="bg-gray-50 dark:bg-[#14141f] border border-gray-100 dark:border-[#2a2a3d] rounded-2xl px-6 py-5 mb-8">
+          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1.5">Credits Added</p>
+          <p className="font-display text-4xl font-black text-primary">${(finalAmount + bonusAmount).toFixed(2)}</p>
         </div>
-        <button onClick={() => setStep('select')}
-          className="w-full py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:opacity-90 active:scale-[0.98] transition-all shadow-sm shadow-primary/30">
-          Fund Again
+        <button 
+          onClick={() => { setStep('select'); setCustomAmount(''); setCard({ number: '', name: '', expiry: '', cvv: '' }); }}
+          className="w-full py-3.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition-all"
+        >
+          Return to Dashboard
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-8">
+      <PageHeader title="Workspace Billing" subtitle="Purchase credits to scale your infrastructure and team access." />
 
-      <PageHeader title="Fund Wallet" subtitle="Add funds to access all premium services" />
-
-      {step === 'pay' ? (
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 items-start">
-
-          {/* Payment form */}
-          <div className="anim-up d-1 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5">
-            <p className="font-semibold text-sm text-gray-900 dark:text-white mb-4">
-              {method === 'card' ? 'Card Details' : method === 'crypto' ? 'Crypto Payment' : 'E-Wallet'}
-            </p>
+      {step === 'checkout' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start animate-in slide-in-from-right-4 duration-300">
+          
+          {/* Checkout Form */}
+          <div className="bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-3xl shadow-sm p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100 dark:border-[#2a2a3d]">
+              <button 
+                onClick={() => setStep('select')}
+                className="p-2 -ml-2 rounded-xl hover:bg-gray-50 dark:hover:bg-[#222232] transition-colors"
+              >
+                <ChevronRight size={20} className="text-gray-400 rotate-180" />
+              </button>
+              <div>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-white">Secure Checkout</h3>
+                <p className="text-xs text-gray-500">Complete your transaction via {method === 'card' ? 'Stripe' : method === 'crypto' ? 'Coinbase Commerce' : 'Digital Wallet'}</p>
+              </div>
+            </div>
 
             {method === 'card' && (
-              <div className="flex flex-col gap-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Card Number</label>
-                  <input className="field" placeholder="1234 5678 9012 3456" maxLength={19}
-                    value={card.number}
-                    onChange={e => setCard(c => ({ ...c, number: e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim() }))} />
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Card Information</label>
+                  <div className="border border-gray-200 dark:border-[#2a2a3d] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+                    <input 
+                      className="w-full bg-transparent px-4 py-3.5 text-sm outline-none dark:text-white border-b border-gray-200 dark:border-[#2a2a3d]" 
+                      placeholder="Card Number" 
+                      maxLength={19}
+                      value={card.number}
+                      onChange={e => setCard(c => ({ ...c, number: e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim() }))} 
+                    />
+                    <div className="flex bg-gray-50/50 dark:bg-[#14141f]">
+                      <input 
+                        className="w-1/2 bg-transparent px-4 py-3.5 text-sm outline-none dark:text-white border-r border-gray-200 dark:border-[#2a2a3d]" 
+                        placeholder="MM / YY" 
+                        maxLength={5}
+                        value={card.expiry} 
+                        onChange={handleExpiryChange} 
+                      />
+                      <input 
+                        className="w-1/2 bg-transparent px-4 py-3.5 text-sm outline-none dark:text-white" 
+                        placeholder="CVC" 
+                        maxLength={4} 
+                        type="password"
+                        value={card.cvv} 
+                        onChange={e => setCard(c => ({ ...c, cvv: e.target.value.replace(/\D/g, '') }))} 
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Cardholder Name</label>
-                  <input className="field" placeholder="John Doe"
-                    value={card.name} onChange={e => setCard(c => ({ ...c, name: e.target.value }))} />
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Name on Card</label>
+                  <input 
+                    className="w-full bg-white dark:bg-transparent border border-gray-200 dark:border-[#2a2a3d] rounded-xl px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all dark:text-white" 
+                    placeholder="Full Name"
+                    value={card.name} 
+                    onChange={e => setCard(c => ({ ...c, name: e.target.value }))} 
+                  />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Expiry</label>
-                    <input className="field" placeholder="MM/YY" maxLength={5}
-                      value={card.expiry} onChange={e => setCard(c => ({ ...c, expiry: e.target.value }))} />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">CVV</label>
-                    <input className="field" placeholder="123" maxLength={4} type="password"
-                      value={card.cvv} onChange={e => setCard(c => ({ ...c, cvv: e.target.value }))} />
-                  </div>
-                </div>
-                <p className="flex items-center gap-1.5 text-[11.5px] text-gray-400">
-                  <Lock size={11} /> SSL encrypted · PCI DSS compliant
-                </p>
               </div>
             )}
 
             {method === 'crypto' && (
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-2">
-                  {Object.keys(cryptoAddr).map(c => (
+              <div className="space-y-6">
+                <div className="flex gap-2 p-1 bg-gray-50 dark:bg-[#14141f] rounded-xl border border-gray-100 dark:border-[#2a2a3d]">
+                  {Object.keys(CRYPTO_RATES).map(c => (
                     <button key={c} onClick={() => setCoin(c)}
-                      className={`flex-1 py-2 rounded-lg border text-xs font-bold transition-all
-                        ${coin === c
-                          ? 'border-primary bg-primary-soft text-primary dark:bg-primary/15 dark:border-primary/40'
-                          : 'border-gray-200 dark:border-[#2a2a3d] text-gray-500 dark:text-gray-400 hover:border-gray-300'
-                        }`}>
+                      className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all shadow-sm
+                        ${coin === c 
+                          ? 'bg-white dark:bg-[#2a2a3d] text-primary ring-1 ring-gray-200 dark:ring-gray-700' 
+                          : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}>
                       {c}
                     </button>
                   ))}
                 </div>
-                <div className="bg-gray-50 dark:bg-[#222232] border border-gray-100 dark:border-[#2a2a3d] rounded-xl p-5 text-center">
-                  {/* Pseudo QR */}
-                  <div className="w-28 h-28 rounded-lg bg-white border border-gray-200 dark:border-[#2a2a3d] mx-auto mb-3 flex items-center justify-center p-2">
-                    <div className="grid gap-0.5 w-full h-full" style={{ gridTemplateColumns: 'repeat(7,1fr)' }}>
-                      {Array.from({ length: 49 }, (_, i) => (
-                        <div key={i} className={`rounded-[1px] ${[0,1,5,6,7,8,12,13,14,35,36,40,41,42,43,47,48].includes(i) ? 'bg-gray-900 dark:bg-white' : ''}`} />
-                      ))}
+                
+                <div className="border border-gray-100 dark:border-[#2a2a3d] rounded-2xl p-6 text-center bg-gray-50/50 dark:bg-transparent">
+                  <div className="w-32 h-32 mx-auto bg-white border border-gray-200 rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                    <QrCode size={80} className="text-gray-800" strokeWidth={1} />
+                  </div>
+                  <p className="text-xs text-gray-500 font-medium mb-1">Send exactly</p>
+                  <p className="font-display text-2xl font-black text-gray-900 dark:text-white mb-6">
+                    {(finalAmount / CRYPTO_RATES[coin]).toFixed(coin === 'USDC' ? 2 : 5)} {coin}
+                  </p>
+                  
+                  <div className="text-left">
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 ml-1">Deposit Address</label>
+                    <div className="flex items-center gap-3 bg-white dark:bg-[#14141f] border border-gray-200 dark:border-[#2a2a3d] rounded-xl pl-4 pr-2 py-2">
+                      <span className="text-xs text-gray-600 dark:text-gray-300 flex-1 font-mono truncate select-all">{CRYPTO_ADDR[coin]}</span>
+                      <button 
+                        onClick={() => handleCopy(CRYPTO_ADDR[coin])}
+                        className={`p-2 rounded-lg transition-all ${copied ? 'bg-green-50 text-green-500' : 'bg-gray-50 dark:bg-[#222232] text-gray-500 hover:text-primary'}`}
+                      >
+                        {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
+                      </button>
                     </div>
                   </div>
-                  <p className="text-[11px] text-gray-400 mb-1">Send exactly</p>
-                  <p className="font-display text-xl font-extrabold text-gray-900 dark:text-white">
-                    {(final / (coin === 'BTC' ? 65000 : coin === 'ETH' ? 3200 : 1)).toFixed(coin === 'USDT' ? 2 : 6)} {coin}
-                  </p>
-                  <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-lg px-3 py-2 mt-3">
-                    <span className="text-[10px] text-gray-400 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-mono">{cryptoAddr[coin]}</span>
-                    <button onClick={() => copy(cryptoAddr[coin])}
-                      className={`shrink-0 transition-colors ${copied ? 'text-green-500' : 'text-primary hover:opacity-70'}`}>
-                      {copied ? <CheckCircle2 size={13} /> : <Copy size={13} />}
-                    </button>
-                  </div>
                 </div>
-                <p className="text-[11.5px] text-gray-400 text-center">Auto-detected. Balance updates within 2–6 confirmations.</p>
               </div>
             )}
 
             {method === 'wallet' && (
-              <div className="flex flex-col gap-2">
-                {['PayPal', 'Cash App', 'Venmo', 'Zelle'].map(w => (
-                  <button key={w}
-                    className="flex items-center justify-between w-full px-4 py-3.5 rounded-xl border border-gray-200 dark:border-[#2a2a3d] hover:border-primary hover:bg-primary-soft dark:hover:bg-primary/10 text-left transition-all">
-                    <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">Pay with {w}</span>
-                    <ChevronRight size={15} className="text-gray-400" />
+              <div className="space-y-3">
+                {['Apple Pay', 'Google Pay', 'PayPal'].map(w => (
+                  <button key={w} className="w-full flex items-center justify-between px-5 py-4 rounded-xl border border-gray-200 dark:border-[#2a2a3d] hover:border-primary hover:bg-primary/5 transition-all group">
+                    <span className="font-bold text-sm text-gray-900 dark:text-white group-hover:text-primary">{w}</span>
+                    <ChevronRight size={18} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
                   </button>
                 ))}
               </div>
             )}
 
-            <div className="flex gap-2.5 mt-5">
-              <button onClick={() => setStep('select')}
-                className="flex-1 py-2.5 rounded-lg border border-gray-200 dark:border-[#2a2a3d] text-sm font-semibold text-gray-600 dark:text-gray-400 hover:border-gray-300 transition-colors">
-                Back
+            {method !== 'crypto' && method !== 'wallet' && (
+              <button 
+                onClick={handlePayment}
+                disabled={!isCardValid || isProcessing}
+                className="w-full mt-8 py-4 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isProcessing ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : `Pay $${finalAmount.toFixed(2)}`}
               </button>
-              {method !== 'crypto' && (
-                <button onClick={() => setStep('success')}
-                  className="flex-2 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:opacity-90 active:scale-[0.98] transition-all shadow-sm shadow-primary/30">
-                  Pay ${final.toFixed(2)}
-                </button>
-              )}
+            )}
+            
+            <div className="flex items-center justify-center gap-2 mt-6 text-[11px] font-medium text-gray-400">
+              <ShieldCheck size={14} className="text-green-500" />
+              <span>Secured by 256-bit SSL encryption. PCI DSS compliant.</span>
             </div>
           </div>
 
-          {/* Order summary */}
-          <div className="anim-up d-2 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5">
-            <p className="font-semibold text-sm text-gray-900 dark:text-white mb-4">Order Summary</p>
-            <div className="flex flex-col gap-2.5">
-              {[
-                { l: 'Deposit',        v: `$${final.toFixed(2)}`,   green: false },
-                ...(bonus > 0 ? [{ l: 'Bonus credit', v: `+$${bonus.toFixed(2)}`, green: true }] : []),
-                { l: 'Processing fee', v: '$0.00',                  green: false },
-              ].map(({ l, v, green }) => (
-                <div key={l} className="flex justify-between text-xs">
-                  <span className={green ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}>{l}</span>
-                  <span className={`font-semibold ${green ? 'text-green-600 dark:text-green-400' : 'text-gray-800 dark:text-gray-200'}`}>{v}</span>
+          {/* Order Summary */}
+          <div className="bg-gray-50 dark:bg-[#14141f] border border-gray-100 dark:border-[#2a2a3d] rounded-3xl p-6 sticky top-8">
+            <h4 className="font-bold text-gray-900 dark:text-white mb-6">Order Summary</h4>
+            <div className="space-y-4 text-sm">
+              <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-[#2a2a3d]">
+                <span className="text-gray-500">Workspace Credits</span>
+                <span className="font-bold dark:text-white">${finalAmount.toFixed(2)}</span>
+              </div>
+              
+              {bonusAmount > 0 && (
+                <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-[#2a2a3d]">
+                  <span className="text-green-600 dark:text-green-400 flex items-center gap-1.5"><Gift size={14}/> Bonus Applied</span>
+                  <span className="font-bold text-green-600 dark:text-green-400">+${bonusAmount.toFixed(2)}</span>
                 </div>
-              ))}
-              <div className="border-t border-gray-100 dark:border-[#2a2a3d] pt-2.5 mt-1 flex justify-between">
-                <span className="text-sm font-bold text-gray-900 dark:text-white">Total credit</span>
-                <span className="font-display text-base font-extrabold text-primary">${(final + bonus).toFixed(2)}</span>
+              )}
+              
+              <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-[#2a2a3d]">
+                <span className="text-gray-500">Taxes & Fees</span>
+                <span className="font-medium text-gray-400">Calculated at checkout</span>
+              </div>
+              
+              <div className="flex justify-between items-center pt-2">
+                <span className="font-bold text-gray-900 dark:text-white">Total Charge</span>
+                <span className="font-display text-xl font-black text-gray-900 dark:text-white">${finalAmount.toFixed(2)}</span>
               </div>
             </div>
-            <p className="flex items-center gap-1.5 text-[11px] text-gray-400 mt-4">
-              <Lock size={11} /> Secure payment
-            </p>
           </div>
         </div>
+
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-          {/* Method + amount select */}
-          <div className="anim-up d-1 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5">
-            <p className="font-semibold text-sm text-gray-900 dark:text-white mb-4">Payment Method</p>
-            <div className="flex flex-col gap-2.5 mb-6">
-              {methods.map(({ id, label, icon: Icon, desc }) => (
-                <button key={id} onClick={() => setMethod(id)}
-                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl border text-left transition-all
-                    ${method === id
-                      ? 'border-primary bg-primary-soft dark:bg-primary/15'
-                      : 'border-gray-200 dark:border-[#2a2a3d] hover:border-gray-300 dark:hover:border-gray-600'
-                    }`}>
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0
-                    ${method === id ? 'bg-primary/15' : 'bg-gray-100 dark:bg-[#222232]'}`}>
-                    <Icon size={17} className={method === id ? 'text-primary' : 'text-gray-400'} />
-                  </div>
-                  <div className="flex-1">
-                    <p className={`text-xs font-semibold ${method === id ? 'text-primary' : 'text-gray-800 dark:text-gray-200'}`}>{label}</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">{desc}</p>
-                  </div>
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0
-                    ${method === id ? 'border-primary' : 'border-gray-300 dark:border-gray-600'}`}>
-                    {method === id && <div className="w-2 h-2 rounded-full bg-primary" />}
-                  </div>
-                </button>
-              ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in slide-in-from-left-4 duration-300">
+          
+          {/* Configuration Column */}
+          <div className="bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-3xl shadow-sm p-6 sm:p-8">
+            
+            <div className="mb-8">
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">1. Select Payment Method</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {METHODS.map(({ id, label, icon: Icon }) => (
+                  <button key={id} onClick={() => setMethod(id)}
+                    className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all
+                      ${method === id 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-gray-100 dark:border-[#2a2a3d] hover:border-gray-200 dark:hover:border-gray-700'}`}>
+                    <Icon size={24} className={method === id ? 'text-primary' : 'text-gray-400'} strokeWidth={1.5} />
+                    <span className={`text-xs font-bold text-center ${method === id ? 'text-primary' : 'text-gray-600 dark:text-gray-400'}`}>{label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <p className="font-semibold text-sm text-gray-900 dark:text-white mb-3">Choose Amount</p>
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {packages.map(({ amount, bonus: b, label, popular }) => (
-                <button key={amount} onClick={() => { setPkg(amount); setCustom(''); }}
-                  className={`relative py-3 px-2 rounded-xl border text-center transition-all
-                    ${pkg === amount && !custom
-                      ? 'border-primary bg-primary-soft dark:bg-primary/15'
-                      : 'border-gray-200 dark:border-[#2a2a3d] hover:border-gray-300'
-                    }`}>
-                  {popular && (
-                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-bold rounded-full px-1.5 py-px whitespace-nowrap">
-                      POPULAR
-                    </span>
-                  )}
-                  <p className={`font-display text-sm font-extrabold ${pkg === amount && !custom ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
-                    ${amount}
-                  </p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{label}</p>
-                  {b > 0 && <p className="text-[10px] text-green-600 dark:text-green-400 font-bold mt-0.5">+${b}</p>}
-                </button>
-              ))}
+            <div>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">2. Select Credit Package</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+                {CREDIT_PACKAGES.map(({ amount, bonus: b, label, popular }) => (
+                  <button key={amount} onClick={() => { setSelectedPkg(amount); setCustomAmount(''); }}
+                    className={`relative p-4 rounded-2xl border-2 text-center transition-all flex flex-col items-center justify-center min-h-[100px]
+                      ${selectedPkg === amount && !customAmount 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-gray-100 dark:border-[#2a2a3d] hover:border-gray-200 dark:hover:border-gray-700'}`}>
+                    {popular && <span className="absolute -top-2.5 bg-primary text-white text-[9px] font-black uppercase tracking-wider rounded-full px-2.5 py-0.5 shadow-sm">Popular</span>}
+                    <span className={`font-display text-xl font-black ${selectedPkg === amount && !customAmount ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>${amount}</span>
+                    {b > 0 ? (
+                      <span className="text-[10px] font-bold text-green-500 mt-1 bg-green-50 dark:bg-green-500/10 px-2 py-0.5 rounded-md">+{b} Bonus</span>
+                    ) : (
+                      <span className="text-[10px] text-gray-400 mt-1">{label}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <span className="text-gray-400 font-bold">$</span>
+                </div>
+                <input 
+                  type="number"
+                  className="w-full bg-gray-50 dark:bg-[#14141f] border border-gray-200 dark:border-[#2a2a3d] rounded-xl pl-8 pr-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-white" 
+                  placeholder="Or enter a custom amount..."
+                  value={customAmount} 
+                  onChange={e => { setCustomAmount(e.target.value); setSelectedPkg(0); }} 
+                />
+              </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Custom Amount</label>
-              <input className="field" placeholder="Enter custom amount ($)"
-                value={custom} onChange={e => { setCustom(e.target.value); setPkg(0); }} />
-            </div>
-
-            <button onClick={() => setStep('pay')}
-              className="w-full py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:opacity-90 active:scale-[0.98] transition-all shadow-sm shadow-primary/30">
-              Continue — ${final.toFixed(2)}
+            <button 
+              onClick={() => setStep('checkout')}
+              disabled={finalAmount < 5}
+              className="w-full mt-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Continue to Checkout
             </button>
           </div>
 
-          {/* Wallet card + perks */}
-          <div className="anim-up d-2 flex flex-col gap-4">
-            <div className="relative bg-gray-900 rounded-2xl p-7 text-white overflow-hidden">
-              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-white/5" />
-              <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full bg-white/3" />
-              <p className="text-[10px] text-white/40 uppercase tracking-[0.07em] mb-1.5">Current Balance</p>
-              <p className="font-display text-5xl font-black leading-none mb-2">$0.00</p>
-              <p className="text-xs text-white/35">Add funds to unlock all tools</p>
+          {/* Value Prop Column */}
+          <div className="flex flex-col gap-6">
+            <div className="relative bg-gradient-to-br from-primary to-blue-700 rounded-3xl p-8 text-white overflow-hidden shadow-xl shadow-primary/20">
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-white/20 rounded-xl backdrop-blur-md flex items-center justify-center mb-6 border border-white/20">
+                  <Wallet size={24} className="text-white" />
+                </div>
+                <p className="text-xs font-bold text-white/60 uppercase tracking-widest mb-2">Available Balance</p>
+                <p className="font-display text-5xl font-black tracking-tight mb-2">$0.00</p>
+                <p className="text-sm text-blue-100">Fund your account to provision resources.</p>
+              </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5 flex-1">
-              <p className="font-semibold text-sm text-gray-900 dark:text-white mb-4">Why fund your wallet?</p>
-              <div className="flex flex-col gap-3">
+            <div className="bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-3xl p-8 flex-1">
+              <h4 className="font-bold text-gray-900 dark:text-white mb-6">Enterprise Benefits</h4>
+              <div className="space-y-5">
                 {[
-                  ['⚡', 'Instant access to all 7 premium tools'],
-                  ['🎁', 'Bonus credits on larger deposits'],
-                  ['🔒', 'Funds never expire'],
-                  ['💳', 'Multiple payment methods supported'],
-                ].map(([icon, text]) => (
-                  <div key={text as string} className="flex items-center gap-3">
-                    <span className="text-base">{icon}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{text}</span>
+                  { icon: Zap, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10', title: 'Instant Provisioning', desc: 'Credits are applied to your workspace immediately.' },
+                  { icon: Gift, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-500/10', title: 'Volume Bonuses', desc: 'Get up to $300 in free credits on large deposits.' },
+                  { icon: ShieldCheck, color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10', title: 'No Expiration', desc: 'Workspace credits never expire or deprecate in value.' },
+                ].map((perk, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${perk.bg}`}>
+                      <perk.icon size={18} className={perk.color} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm text-gray-900 dark:text-white mb-0.5">{perk.title}</p>
+                      <p className="text-xs text-gray-500 leading-relaxed">{perk.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
+
         </div>
       )}
     </div>

