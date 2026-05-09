@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CreditCard, Bitcoin, Wallet, CheckCircle2, Lock, ChevronRight, Copy, ShieldCheck, Zap, Gift, QrCode } from 'lucide-react';
+import { CreditCard, Bitcoin, Wallet, CheckCircle2, ChevronRight, Copy, ShieldCheck, Zap, Gift, QrCode } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
 const METHODS = [

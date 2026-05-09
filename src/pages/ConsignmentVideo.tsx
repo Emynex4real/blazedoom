@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo } from 'react';
 import { 
-  X, CheckSquare, Square, Upload, Play, CheckCircle2, 
+  X, CheckSquare, Upload, Play, CheckCircle2,
   Clock, ExternalLink, Trash2, Image as ImageIcon, 
   DollarSign, Plus, Info 
 } from 'lucide-react';
