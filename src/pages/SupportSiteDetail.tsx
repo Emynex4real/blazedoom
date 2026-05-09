@@ -18,7 +18,7 @@ window.smartsupp||(function(d) {
 <noscript>Powered by <a href=&quot;https://www.smartsupp.com&quot; target=&quot;_blank&quot;>Smartsupp</a></noscript>`;
 
 function generateSupportUrl(platform: string): string {
-  const hash = Array.from(platform + 'blazedoom')
+  const hash = Array.from(platform + 'torasend')
     .reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) & 0xffffffff, 0)
     .toString(16)
     .padStart(8, '0');

@@ -25,7 +25,7 @@ export default function Login() {
           <div className="w-9 h-9 rounded-[9px] bg-primary flex items-center justify-center shrink-0">
             <Zap size={17} color="#fff" strokeWidth={2.5} />
           </div>
-          <span className="font-display font-extrabold text-[18px] text-gray-900 dark:text-white">Blazedoom</span>
+          <span className="font-display font-extrabold text-[18px] text-gray-900 dark:text-white">Torasend</span>
         </div>
 
         <h1 className="font-display text-[22px] font-extrabold text-gray-900 dark:text-white mb-1">Welcome back</h1>

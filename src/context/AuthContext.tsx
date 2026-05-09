@@ -18,7 +18,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     try {
-      const stored = localStorage.getItem('blazedoom_user');
+      const stored = localStorage.getItem('torasend_user');
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
@@ -30,12 +30,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (email: string, name?: string) => {
     const u: User = { email, name: name || email.split('@')[0] };
     setUser(u);
-    localStorage.setItem('blazedoom_user', JSON.stringify(u));
+    localStorage.setItem('torasend_user', JSON.stringify(u));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('blazedoom_user');
+    localStorage.removeItem('torasend_user');
   };
 
   return (

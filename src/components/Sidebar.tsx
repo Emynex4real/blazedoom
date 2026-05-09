@@ -123,7 +123,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
             </span>
             {!collapsed && (
               <span className="font-display font-bold text-[17px] text-[#0a0a0a] dark:text-white tracking-tight truncate">
-                Blazedoom
+                Torasend
               </span>
             )}
           </button>
@@ -257,7 +257,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
             )
           ) : (
             !collapsed && (
-              <p className="text-[11px] text-[#a3a3a3] text-center">© 2025 Blazedoom</p>
+              <p className="text-[11px] text-[#a3a3a3] text-center">© 2025 Torasend</p>
             )
           )}
         </div>

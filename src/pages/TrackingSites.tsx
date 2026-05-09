@@ -17,7 +17,7 @@ export default function TrackingSites() {
   const [generated, setGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const url = `https://blazedoom.com/track/${form.tracking || 'XXXXXXXXXX'}`;
+  const url = `https://torasend.com/track/${form.tracking || 'XXXXXXXXXX'}`;
   const copy = () => { navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); };
 
   return (
