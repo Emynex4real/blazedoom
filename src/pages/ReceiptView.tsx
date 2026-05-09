@@ -26,7 +26,7 @@ export default function ReceiptView() {
   const [receipt, setReceipt] = useState<ReceiptRecord | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem('blazedoom_receipts');
+    const stored = localStorage.getItem('torasend_receipts');
     if (stored) {
       const all: ReceiptRecord[] = JSON.parse(stored);
       setReceipt(all.find(r => r.id === id) ?? null);

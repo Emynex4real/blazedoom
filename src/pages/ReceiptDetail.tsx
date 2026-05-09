@@ -88,8 +88,8 @@ export default function ReceiptDetail() {
       createdAt: new Date().toISOString(),
       txid: Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
     };
-    const existing = JSON.parse(localStorage.getItem('blazedoom_receipts') || '[]');
-    localStorage.setItem('blazedoom_receipts', JSON.stringify([...existing, record]));
+    const existing = JSON.parse(localStorage.getItem('torasend_receipts') || '[]');
+    localStorage.setItem('torasend_receipts', JSON.stringify([...existing, record]));
     setGenerated(true);
     setTimeout(() => setGenerated(false), 3000);
   };

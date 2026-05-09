@@ -64,12 +64,12 @@ export default function ReceiptHistory() {
   const [query, setQuery]       = useState('');
 
   useEffect(() => {
-    const stored = localStorage.getItem('blazedoom_receipts');
+    const stored = localStorage.getItem('torasend_receipts');
     if (stored) {
       const parsed: ReceiptRecord[] = JSON.parse(stored);
       setReceipts(parsed.length > 0 ? parsed : MOCK_RECEIPTS);
     } else {
-      localStorage.setItem('blazedoom_receipts', JSON.stringify(MOCK_RECEIPTS));
+      localStorage.setItem('torasend_receipts', JSON.stringify(MOCK_RECEIPTS));
       setReceipts(MOCK_RECEIPTS);
     }
   }, []);
@@ -85,7 +85,7 @@ export default function ReceiptHistory() {
   const removeReceipt = (id: string) => {
     const updated = receipts.filter(r => r.id !== id);
     setReceipts(updated);
-    localStorage.setItem('blazedoom_receipts', JSON.stringify(updated));
+    localStorage.setItem('torasend_receipts', JSON.stringify(updated));
   };
 
   const fmt = (iso: string) => {
