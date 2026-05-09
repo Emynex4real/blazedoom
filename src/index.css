@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #8b5cf6;
+  --color-primary-soft: rgba(139, 92, 246, 0.12);
+  --color-page: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-border: #e5e5e5;
+  --color-t1: #0a0a0a;
+  --color-t2: #525252;
+  --color-t3: #a3a3a3;
+  --font-display: 'Geist', sans-serif;
+  --font-body: 'Geist', sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+  --sidebar-w: 244px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  background-color: #f5f5f5;
+}
+
+.dark body { background-color: #0a0a0a; }
+
+.font-display { font-family: 'Geist', sans-serif; }
+.font-mono { font-family: 'Geist Mono', monospace; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(127,127,127,0.2); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(127,127,127,0.35); }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.anim-up { animation: fadeUp 0.35s ease both; }
+.anim-in { animation: fadeIn 0.25s ease both; }
+.d-1 { animation-delay: 0.05s; }
+.d-2 { animation-delay: 0.10s; }
+.d-3 { animation-delay: 0.15s; }
+.d-4 { animation-delay: 0.20s; }
+.d-5 { animation-delay: 0.25s; }
+.d-6 { animation-delay: 0.30s; }
+.d-7 { animation-delay: 0.35s; }
+
+/* Progress bar */
+.prog-track { height: 5px; border-radius: 999px; background: #e5e5e5; overflow: hidden; }
+.prog-fill  { height: 100%; border-radius: 999px; transition: width 0.12s linear; }
+
+/* Input base */
+.field {
+  width: 100%;
+  padding: 9px 13px;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 8px;
+  background: #ffffff;
+  font-family: 'Geist', sans-serif;
+  font-size: 13.5px;
+  color: #0a0a0a;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field::placeholder { color: #a3a3a3; }
+.field:focus { border-color: rgba(139, 92, 246, 0.6); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12); }
+.dark .field { background: #141414; border-color: #262626; color: #fafafa; }
+.dark .field:focus { background: #141414; border-color: rgba(139, 92, 246, 0.5); }
+select.field { appearance: none; cursor: pointer; }
+
+/* Tabular numbers */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Dot background */
+.dot-bg {
+  background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+.dark .dot-bg {
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+}
