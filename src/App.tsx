@@ -51,11 +51,12 @@ export default function App() {
             <Route path="/create-account" element={<GuestOnly><CreateAccount /></GuestOnly>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Public receipt routes — accessible without login */}
-            <Route path="/receipt-generator"            element={<ReceiptGenerator />} />
-            <Route path="/receipt-generator/:platform"  element={<ReceiptDetail />} />
-            <Route path="/receipt-history"              element={<ReceiptHistory />} />
-            <Route path="/receipt-view/:id"             element={<ReceiptView />} />
+            {/* Browsable without login — action gates handled inside each page */}
+            <Route path="/receipt-generator"    element={<ReceiptGenerator />} />
+            <Route path="/receipt-history"      element={<ReceiptHistory />} />
+            <Route path="/receipt-view/:id"     element={<ReceiptView />} />
+            <Route path="/order-virtual-number" element={<OrderVirtualNumber />} />
+            <Route path="/fund-wallet"          element={<FundWallet />} />
 
             {/* Protected tool routes — redirect to /login if not logged in */}
             <Route element={<ProtectedRoute />}>
@@ -68,8 +69,7 @@ export default function App() {
               <Route path="/transaction-generator" element={<TransactionGenerator />} />
               <Route path="/wallet-flashing"          element={<WalletFlashing />} />
               <Route path="/wallet-flashing/my-list" element={<MyFlashWallets />} />
-              <Route path="/fund-wallet"           element={<FundWallet />} />
-              <Route path="/order-virtual-number" element={<OrderVirtualNumber />} />
+              <Route path="/receipt-generator/:platform" element={<ReceiptDetail />} />
               <Route path="/my-virtual-numbers"  element={<MyVirtualNumbers />} />
             </Route>
 

@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { ChevronRight, Check, Search, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, Check, Search, CheckCircle2, LogIn, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
+import { useAuth } from '../context/AuthContext';
 
 type Step = 'service' | 'country' | 'provider' | 'confirm';
 
@@ -99,6 +101,7 @@ function ServiceIcon({ id }: { id: string }) {
 }
 
 export default function OrderVirtualNumber() {
+  const { isLoggedIn } = useAuth();
   const [step, setStep] = useState<Step>('service');
   const [serviceQuery, setServiceQuery] = useState('');
   const [countryQuery, setCountryQuery] = useState('');
@@ -106,6 +109,13 @@ export default function OrderVirtualNumber() {
   const [selectedCountry, setSelectedCountry] = useState<(typeof COUNTRIES)[0] | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<(typeof PROVIDERS)[0] | null>(null);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  const handleServiceClick = (svc: (typeof SERVICES)[0]) => {
+    if (!isLoggedIn) { setShowLoginPrompt(true); return; }
+    setSelectedService(svc);
+    setStep('country');
+  };
 
   const currentIndex = STEP_ORDER.indexOf(step);
 
@@ -124,6 +134,41 @@ export default function OrderVirtualNumber() {
   const filteredCountries = COUNTRIES.filter(c =>
     c.name.toLowerCase().includes(countryQuery.toLowerCase()) ||
     c.slug.toLowerCase().includes(countryQuery.toLowerCase())
+  );
+
+  const LoginPrompt = () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+      <div className="relative bg-white dark:bg-[#141414] border border-[#e5e5e5]/80 dark:border-[#262626]/80 rounded-2xl shadow-xl p-6 w-full max-w-sm">
+        <button
+          onClick={() => setShowLoginPrompt(false)}
+          className="absolute top-3 right-3 p-1.5 rounded-md text-[#a3a3a3] hover:text-[#0a0a0a] dark:hover:text-white hover:bg-[#f5f5f5] dark:hover:bg-[#1c1c1c] transition-colors"
+        >
+          <X size={15} />
+        </button>
+        <div className="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/15 grid place-items-center mb-4">
+          <LogIn size={18} className="text-primary" />
+        </div>
+        <h2 className="font-display text-[16px] font-bold text-[#0a0a0a] dark:text-white mb-1">Sign in required</h2>
+        <p className="text-[12.5px] text-[#737373] dark:text-[#a3a3a3] mb-5">
+          You need to be logged in to order a virtual number. Create a free account or sign in to continue.
+        </p>
+        <div className="flex gap-2">
+          <Link
+            to="/login"
+            className="flex-1 text-center px-4 py-2.5 bg-primary text-white text-[13px] font-semibold rounded-lg hover:brightness-110 active:scale-95 transition-all no-underline"
+            style={{ boxShadow: '0 1px 12px -3px rgba(139,92,246,0.5)' }}
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/create-account"
+            className="flex-1 text-center px-4 py-2.5 bg-[#f5f5f5] dark:bg-[#1c1c1c] text-[#0a0a0a] dark:text-white text-[13px] font-semibold rounded-lg hover:bg-[#ebebeb] dark:hover:bg-[#262626] active:scale-95 transition-all no-underline"
+          >
+            Create Account
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 
   if (orderSuccess) {
@@ -160,6 +205,7 @@ export default function OrderVirtualNumber() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-3xl">
+      {showLoginPrompt && <LoginPrompt />}
       <PageHeader title="Order Virtual Number" subtitle="Get a temporary number for any service" />
 
       {/* Stepper */}
@@ -233,7 +279,7 @@ export default function OrderVirtualNumber() {
             {filteredServices.map(svc => (
               <button
                 key={svc.id}
-                onClick={() => { setSelectedService(svc); setStep('country'); }}
+                onClick={() => handleServiceClick(svc)}
                 className="w-full flex items-center gap-3 py-3 px-1 hover:bg-[#fafafa] dark:hover:bg-[#111] transition-colors text-left"
               >
                 <ServiceIcon id={svc.id} />

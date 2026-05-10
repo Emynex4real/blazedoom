@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, Receipt } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Search, Receipt, LogIn, X } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
+import { useAuth } from '../context/AuthContext';
 
 const PLATFORMS = [
   { slug: 'binance',      name: 'Binance',      color: '#F0B90B', bg: '#FFFBEB', initial: 'B' },
@@ -20,7 +21,17 @@ const PLATFORMS = [
 
 export default function ReceiptGenerator() {
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
   const [search, setSearch] = useState('');
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  const handlePlatformClick = (slug: string) => {
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    navigate(`/receipt-generator/${slug}`);
+  };
 
   const filtered = PLATFORMS.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -28,6 +39,44 @@ export default function ReceiptGenerator() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
+
+      {/* Login required modal */}
+      {showLoginPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+          <div className="relative bg-white dark:bg-[#141414] border border-[#e5e5e5]/80 dark:border-[#262626]/80 rounded-2xl shadow-xl p-6 w-full max-w-sm">
+            <button
+              onClick={() => setShowLoginPrompt(false)}
+              className="absolute top-3 right-3 p-1.5 rounded-md text-[#a3a3a3] hover:text-[#0a0a0a] dark:hover:text-white hover:bg-[#f5f5f5] dark:hover:bg-[#1c1c1c] transition-colors"
+            >
+              <X size={15} />
+            </button>
+            <div className="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/15 grid place-items-center mb-4">
+              <LogIn size={18} className="text-primary" />
+            </div>
+            <h2 className="font-display text-[16px] font-bold text-[#0a0a0a] dark:text-white mb-1">
+              Sign in required
+            </h2>
+            <p className="text-[12.5px] text-[#737373] dark:text-[#a3a3a3] mb-5">
+              You need to be logged in to generate receipts. Create a free account or sign in to continue.
+            </p>
+            <div className="flex gap-2">
+              <Link
+                to="/login"
+                className="flex-1 text-center px-4 py-2.5 bg-primary text-white text-[13px] font-semibold rounded-lg hover:brightness-110 active:scale-95 transition-all no-underline"
+                style={{ boxShadow: '0 1px 12px -3px rgba(139,92,246,0.5)' }}
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/create-account"
+                className="flex-1 text-center px-4 py-2.5 bg-[#f5f5f5] dark:bg-[#1c1c1c] text-[#0a0a0a] dark:text-white text-[13px] font-semibold rounded-lg hover:bg-[#ebebeb] dark:hover:bg-[#262626] active:scale-95 transition-all no-underline"
+              >
+                Create Account
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
       <PageHeader title="Receipt Generator" subtitle="Create realistic receipts in just few clicks" />
 
       <div className="anim-up d-1">
@@ -65,7 +114,7 @@ export default function ReceiptGenerator() {
             {filtered.map((p, i) => (
               <button
                 key={p.slug}
-                onClick={() => navigate(`/receipt-generator/${p.slug}`)}
+                onClick={() => handlePlatformClick(p.slug)}
                 style={{ animationDelay: `${i * 40}ms` }}
                 className="anim-up flex flex-col items-center gap-2.5 p-4 rounded-2xl border border-gray-100 dark:border-[#2a2a3d] bg-white dark:bg-[#1a1a28] hover:border-gray-300 dark:hover:border-[#3a3a5d] hover:shadow-md transition-all"
               >

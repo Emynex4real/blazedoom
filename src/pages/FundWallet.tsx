@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { CreditCard, Bitcoin, Wallet, CheckCircle2, ChevronRight, Copy, ShieldCheck, Zap, Gift, QrCode } from 'lucide-react';
+import { CreditCard, Bitcoin, Wallet, CheckCircle2, ChevronRight, Copy, ShieldCheck, Zap, Gift, QrCode, LogIn, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
+import { useAuth } from '../context/AuthContext';
 
 const METHODS = [
   { id: 'card',   label: 'Credit / Debit Card', icon: CreditCard, desc: 'Visa, Mastercard, Amex' },
@@ -25,6 +27,7 @@ const CRYPTO_ADDR: Record<string, string> = {
 };
 
 export default function PlatformBilling() {
+  const { isLoggedIn } = useAuth();
   const [method, setMethod] = useState('card');
   const [selectedPkg, setSelectedPkg] = useState(50);
   const [customAmount, setCustomAmount] = useState('');
@@ -33,6 +36,12 @@ export default function PlatformBilling() {
   const [step, setStep] = useState<'select' | 'checkout' | 'success'>('select');
   const [copied, setCopied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  const handleContinue = () => {
+    if (!isLoggedIn) { setShowLoginPrompt(true); return; }
+    setStep('checkout');
+  };
 
   const finalAmount = customAmount ? parseFloat(customAmount) || 0 : selectedPkg;
   const bonusAmount = CREDIT_PACKAGES.find(p => p.amount === selectedPkg)?.bonus || 0;
@@ -58,6 +67,41 @@ export default function PlatformBilling() {
   };
 
   const isCardValid = card.number.length >= 15 && card.name.length > 2 && card.expiry.length === 5 && card.cvv.length >= 3;
+
+  const LoginPrompt = () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+      <div className="relative bg-white dark:bg-[#141414] border border-[#e5e5e5]/80 dark:border-[#262626]/80 rounded-2xl shadow-xl p-6 w-full max-w-sm">
+        <button
+          onClick={() => setShowLoginPrompt(false)}
+          className="absolute top-3 right-3 p-1.5 rounded-md text-[#a3a3a3] hover:text-[#0a0a0a] dark:hover:text-white hover:bg-[#f5f5f5] dark:hover:bg-[#1c1c1c] transition-colors"
+        >
+          <X size={15} />
+        </button>
+        <div className="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/15 grid place-items-center mb-4">
+          <LogIn size={18} className="text-primary" />
+        </div>
+        <h2 className="font-display text-[16px] font-bold text-[#0a0a0a] dark:text-white mb-1">Sign in required</h2>
+        <p className="text-[12.5px] text-[#737373] dark:text-[#a3a3a3] mb-5">
+          You need to be logged in to fund your wallet. Create a free account or sign in to continue.
+        </p>
+        <div className="flex gap-2">
+          <Link
+            to="/login"
+            className="flex-1 text-center px-4 py-2.5 bg-primary text-white text-[13px] font-semibold rounded-lg hover:brightness-110 active:scale-95 transition-all no-underline"
+            style={{ boxShadow: '0 1px 12px -3px rgba(139,92,246,0.5)' }}
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/create-account"
+            className="flex-1 text-center px-4 py-2.5 bg-[#f5f5f5] dark:bg-[#1c1c1c] text-[#0a0a0a] dark:text-white text-[13px] font-semibold rounded-lg hover:bg-[#ebebeb] dark:hover:bg-[#262626] active:scale-95 transition-all no-underline"
+          >
+            Create Account
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 
   if (step === 'success') return (
     <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center min-h-[70vh] animate-in fade-in duration-500">
@@ -85,6 +129,7 @@ export default function PlatformBilling() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-8">
+      {showLoginPrompt && <LoginPrompt />}
       <PageHeader title="Workspace Billing" subtitle="Purchase credits to scale your infrastructure and team access." />
 
       {step === 'checkout' ? (
@@ -301,7 +346,7 @@ export default function PlatformBilling() {
             </div>
 
             <button 
-              onClick={() => setStep('checkout')}
+              onClick={handleContinue}
               disabled={finalAmount < 5}
               className="w-full mt-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
