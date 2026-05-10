@@ -100,8 +100,8 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
       <aside
         className={`
           fixed top-0 left-0 h-full z-40 flex flex-col
-          bg-[#fafafa]/50 dark:bg-[#0a0a0a]/50 backdrop-blur-xl
-          border-r border-[#e5e5e5]/80 dark:border-[#262626]/80
+          bg-white dark:bg-t1
+          border-r border-border dark:border-[#262626]
           transition-[width] duration-300 overflow-hidden
           ${sidebarWidth}
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}

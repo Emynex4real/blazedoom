@@ -111,10 +111,9 @@ export default function OrderVirtualNumber() {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-  const handleServiceClick = (svc: (typeof SERVICES)[0]) => {
+  const handleConfirmOrder = () => {
     if (!isLoggedIn) { setShowLoginPrompt(true); return; }
-    setSelectedService(svc);
-    setStep('country');
+    setOrderSuccess(true);
   };
 
   const currentIndex = STEP_ORDER.indexOf(step);
@@ -279,7 +278,7 @@ export default function OrderVirtualNumber() {
             {filteredServices.map(svc => (
               <button
                 key={svc.id}
-                onClick={() => handleServiceClick(svc)}
+                onClick={() => { setSelectedService(svc); setStep('country'); }}
                 className="w-full flex items-center gap-3 py-3 px-1 hover:bg-[#fafafa] dark:hover:bg-[#111] transition-colors text-left"
               >
                 <ServiceIcon id={svc.id} />
@@ -411,7 +410,7 @@ export default function OrderVirtualNumber() {
           </div>
 
           <button
-            onClick={() => setOrderSuccess(true)}
+            onClick={handleConfirmOrder}
             className="w-full py-3 rounded-xl text-[14px] font-semibold text-white transition-opacity hover:opacity-90"
             style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)' }}
           >
