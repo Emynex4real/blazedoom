@@ -36,14 +36,14 @@ export default function Home() {
 
       {!isLoggedIn && (
         <div className="mb-6 anim-up d-1">
-          <Link
+          {/* <Link
             to="/login"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-[13px] font-semibold rounded-lg
               hover:brightness-110 active:scale-95 transition-all no-underline"
             style={{ boxShadow: '0 1px 12px -3px rgba(139,92,246,0.5)' }}
           >
             Sign In to Get Started
-          </Link>
+          </Link> */}
         </div>
       )}
 
