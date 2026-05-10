@@ -21,10 +21,10 @@ const publicNav = [
 
 const toolNav = [
   { to: '/',                       label: 'Dashboard',             icon: LayoutDashboard },
-  { to: '/support-sites',          label: 'Support Page',          icon: Headphones },
-  { to: '/consignment-video',      label: 'Consignment Video',     icon: Video },
-  { to: '/tracking-sites',         label: 'Tracking Page',         icon: MapPin },
-  { to: '/wallet-flashing',    label: 'Wallet Flashing',   icon: Wallet },
+  // { to: '/support-sites',          label: 'Support Page',          icon: Headphones },
+  // { to: '/consignment-video',      label: 'Consignment Video',     icon: Video },
+  // { to: '/tracking-sites',         label: 'Tracking Page',         icon: MapPin },
+  // { to: '/wallet-flashing',    label: 'Wallet Flashing',   icon: Wallet },
   { to: '/receipt-generator', label: 'Receipts Generator', icon: Receipt },
   { to: '/receipt-history',   label: 'Receipts History',  icon: History },
   { to: '/fund-wallet',            label: 'Fund Wallet',          icon: CreditCard },
