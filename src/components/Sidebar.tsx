@@ -1,8 +1,8 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, LogIn, UserPlus, KeyRound,
-  LayoutDashboard, Headphones, Video, MapPin,
-  Wallet, Receipt, CreditCard, History,
+  LayoutDashboard,
+  Receipt, CreditCard, History,
   Zap, X, ChevronLeft, ChevronRight, LogOut, Settings, Phone, List,
 } from 'lucide-react';
 import { useState } from 'react';
