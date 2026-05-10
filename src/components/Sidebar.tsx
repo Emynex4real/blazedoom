@@ -13,6 +13,8 @@ const publicNav = [
   { to: '/login',                  label: 'Login',                icon: LogIn },
   { to: '/create-account',         label: 'Create Account',       icon: UserPlus },
   { to: '/forgot-password',        label: 'Forgot Password',      icon: KeyRound },
+  { to: '/receipt-generator',      label: 'Receipts Generator',   icon: Receipt },
+  // { to: '/receipt-history',        label: 'Receipts History',     icon: History },
   { to: '/order-virtual-number',   label: 'Order Virtual Number', icon: Phone },
   { to: '/my-virtual-numbers',     label: 'My Virtual Numbers',   icon: List },
 ];

@@ -5,40 +5,16 @@ import PageHeader from '../components/PageHeader';
 
 const cards = [
   {
-    to: '/tracking-sites',
-    label: 'Tracking Sites',
-    desc: 'Get a shipment tracking code and control the location and details yourself',
-    img: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&q=80',
-  },
-  {
-    to: '/support-sites',
-    label: 'Support Sites',
-    desc: 'Get a customer support website for different platforms in under 60 seconds!',
-    img: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80',
-  },
-  {
     to: '/receipt-generator',
     label: 'Receipt Generator',
     desc: 'Generate realistic receipts for major platforms instantly',
-    img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=80',
+    img: '/receipt%20generator.jpg',
   },
   {
-    to: '/consignment-video',
-    label: 'Consignment Video',
-    desc: 'Create professional consignment confirmation videos',
-    img: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=600&q=80',
-  },
-  {
-    to: '/transaction-generator',
-    label: 'Transaction Generator',
-    desc: 'Generate advanced blockchain transaction records',
-    img: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=600&q=80',
-  },
-  {
-    to: '/wallet-flashing',
-    label: 'Wallet Flashing',
-    desc: 'Direct wallet funding across major platforms',
-    img: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80',
+    to: '/order-virtual-number',
+    label: 'Order Virtual Number',
+    desc: 'Get a virtual phone number for any platform instantly',
+    img: '/order%20number.jpg',
   },
 ];
 
@@ -77,7 +53,7 @@ export default function Home() {
           Quick Actions
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {cards.map(({ to, label, desc, img }, i) => (
             <Link
               key={to}
@@ -88,7 +64,7 @@ export default function Home() {
                 shadow-sm hover:-translate-y-0.5 hover:shadow-md
                 transition-all duration-200 no-underline`}
             >
-              <div className="w-full aspect-video overflow-hidden bg-[#f5f5f5] dark:bg-[#1c1c1c]">
+              <div className="w-full aspect-video overflow-hidden bg-page dark:bg-[#1c1c1c]">
                 <img
                   src={img}
                   alt={label}
@@ -106,24 +82,25 @@ export default function Home() {
             </Link>
           ))}
 
-          {/* Fund Wallet — full width */}
+          {/* Direct Funding */}
           <Link
             to="/fund-wallet"
-            className="anim-up d-7 sm:col-span-2 lg:col-span-3 group flex flex-row rounded-2xl overflow-hidden
+            className="anim-up d-3 group flex flex-col rounded-2xl overflow-hidden
               bg-white dark:bg-[#141414]
               border border-[#e5e5e5]/80 dark:border-[#262626]/80
               shadow-sm hover:-translate-y-0.5 hover:shadow-md
               transition-all duration-200 no-underline"
           >
-            <div className="w-36 sm:w-48 shrink-0 overflow-hidden bg-[#f5f5f5] dark:bg-[#1c1c1c]">
+            <div className="w-full aspect-video overflow-hidden bg-page dark:bg-[#1c1c1c]">
               <img
-                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80"
-                alt="Fund Wallet"
+                src="/direct%20funding.jpg"
+                alt="Direct Funding"
+                loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <div className="p-4 flex flex-col gap-1 justify-center">
-              <p className="text-[13.5px] font-semibold text-[#0a0a0a] dark:text-white">Fund Wallet</p>
+            <div className="p-4 flex flex-col gap-1 flex-1">
+              <p className="text-[13.5px] font-semibold text-[#0a0a0a] dark:text-white">Direct Funding</p>
               <p className="text-xs text-[#737373] dark:text-[#a3a3a3] leading-relaxed">Add funds to access all premium services</p>
               <span className="mt-2 inline-flex items-center gap-0.5 text-xs font-semibold text-primary">
                 Open <ChevronRight size={12} />

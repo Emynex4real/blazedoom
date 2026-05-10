@@ -51,16 +51,18 @@ export default function App() {
             <Route path="/create-account" element={<GuestOnly><CreateAccount /></GuestOnly>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
+            {/* Public receipt routes — accessible without login */}
+            <Route path="/receipt-generator"            element={<ReceiptGenerator />} />
+            <Route path="/receipt-generator/:platform"  element={<ReceiptDetail />} />
+            <Route path="/receipt-history"              element={<ReceiptHistory />} />
+            <Route path="/receipt-view/:id"             element={<ReceiptView />} />
+
             {/* Protected tool routes — redirect to /login if not logged in */}
             <Route element={<ProtectedRoute />}>
               <Route path="/tracking-sites"        element={<TrackingSites />} />
               <Route path="/support-sites"           element={<SupportSites />} />
               <Route path="/support-sites/create"    element={<SupportSiteCreate />} />
               <Route path="/support-sites/:platform" element={<SupportSiteDetail />} />
-              <Route path="/receipt-generator"             element={<ReceiptGenerator />} />
-              <Route path="/receipt-generator/:platform"  element={<ReceiptDetail />} />
-              <Route path="/receipt-history"              element={<ReceiptHistory />} />
-              <Route path="/receipt-view/:id"             element={<ReceiptView />} />
               <Route path="/settings"                     element={<Settings />} />
               <Route path="/consignment-video"     element={<ConsignmentVideo />} />
               <Route path="/transaction-generator" element={<TransactionGenerator />} />
