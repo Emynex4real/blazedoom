@@ -69,8 +69,8 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
         title={collapsed ? label : undefined}
         className={`
           relative flex items-center gap-3 rounded-lg text-[13.5px] font-medium
-          transition-colors duration-150 mb-0.5 no-underline
-          ${collapsed ? 'justify-center px-0 h-10' : 'px-2.5 h-9'}
+          transition-colors duration-150 no-underline
+          ${collapsed ? 'justify-center px-0 h-11' : 'px-2.5 h-11'}
           ${isActive
             ? 'bg-white dark:bg-[#1c1c1c] border border-[#e5e5e5]/80 dark:border-[#262626]/80 shadow-sm text-[#0a0a0a] dark:text-white'
             : 'text-[#737373] hover:text-[#0a0a0a] dark:hover:text-white hover:bg-white/60 dark:hover:bg-[#1c1c1c]/60'
@@ -198,7 +198,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
           )}
           {collapsed && <div className="h-1" />}
 
-          <ul className="space-y-0.5">
+          <ul className="space-y-1">
             {(isLoggedIn ? toolNav : publicNav).map(item => (
               <li key={item.to}>
                 <NavItem {...item} />
@@ -210,7 +210,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
           {isLoggedIn && (
             <>
               <div className="my-3 h-px bg-[#e5e5e5]/70 dark:bg-[#262626]/70 mx-2" />
-              <ul className="space-y-0.5">
+              <ul className="space-y-1">
                 <li>
                   <NavLink
                     to="/settings"
@@ -219,7 +219,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: Props) {
                     className={`
                       relative flex items-center gap-3 rounded-lg text-[13.5px] font-medium
                       transition-colors duration-150 no-underline
-                      ${collapsed ? 'justify-center px-0 h-10' : 'px-2.5 h-9'}
+                      ${collapsed ? 'justify-center px-0 h-11' : 'px-2.5 h-11'}
                       text-[#737373] hover:text-[#0a0a0a] dark:hover:text-white hover:bg-white/60 dark:hover:bg-[#1c1c1c]/60
                     `}
                   >

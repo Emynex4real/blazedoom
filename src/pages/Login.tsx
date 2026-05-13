@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, Zap, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Zap, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -19,6 +19,12 @@ export default function Login() {
   return (
     <div className="min-h-[calc(100vh-57px)] lg:min-h-screen flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-[420px] bg-white dark:bg-[#1a1a28] border border-gray-100 dark:border-[#2a2a3d] rounded-2xl shadow-sm p-8 anim-up">
+
+        {/* Back to Home */}
+        <Link to="/" className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors no-underline mb-6 group">
+          <ArrowLeft size={13} className="group-hover:-translate-x-0.5 transition-transform" />
+          Back to Home
+        </Link>
 
         {/* Brand */}
         <div className="flex items-center gap-2.5 mb-7">

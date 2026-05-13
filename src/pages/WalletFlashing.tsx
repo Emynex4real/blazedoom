@@ -26,17 +26,7 @@ const PLATFORMS: Platform[] = [
     networks: ['BEP-20 (BSC)', 'ERC-20', 'TRC-20', 'BTC Network', 'Solana'],
     addressHint: 'Please paste btc wallet address under bep 20 network',
     logo: (
-      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-        <path d="M16 4l3.5 3.5-8 8L8 12l8-8z" fill="#F3BA2F"/>
-        <path d="M19.5 7.5L23 11l-3.5 3.5L16 11l3.5-3.5z" fill="#F3BA2F"/>
-        <path d="M8 12l3.5 3.5-3.5 3.5L4.5 15.5 8 12z" fill="#F3BA2F"/>
-        <path d="M24 12l3.5 3.5-3.5 3.5L20.5 15.5 24 12z" fill="#F3BA2F"/>
-        <path d="M11.5 15.5L16 11l4.5 4.5-4.5 4.5-4.5-4.5z" fill="#F3BA2F"/>
-        <path d="M16 20l3.5-3.5 3.5 3.5-3.5 3.5L16 20z" fill="#F3BA2F"/>
-        <path d="M8 19l3.5 3.5L8 26l-3.5-3.5L8 19z" fill="#F3BA2F"/>
-        <path d="M12.5 20l3.5 3.5-8 8L4.5 28l8-8z" fill="#F3BA2F"/>
-        <path d="M16 20l3.5 3.5-3.5 3.5L12.5 23.5 16 20z" fill="#F3BA2F"/>
-      </svg>
+      <img src="/binance.webp" alt="Binance" className="w-7 h-7 object-contain" />
     ),
   },
   {
@@ -49,7 +39,7 @@ const PLATFORMS: Platform[] = [
     networks: ['Base Network', 'ERC-20'],
     addressHint: 'Please paste your Base wallet address',
     logo: (
-      <div className="w-7 h-7 rounded-lg bg-[#1652F0] flex items-center justify-center text-white font-black text-base">C</div>
+      <img src="/coinbase.webp" alt="Base" className="w-7 h-7 object-contain" />
     ),
   },
   {
@@ -62,10 +52,7 @@ const PLATFORMS: Platform[] = [
     networks: ['OKC', 'ERC-20', 'BEP-20'],
     addressHint: 'Please paste your OKX wallet address',
     logo: (
-      <div className="w-7 h-7 rounded-lg overflow-hidden grid grid-cols-2 gap-px bg-gray-200">
-        <div className="bg-black"/><div className="bg-white"/>
-        <div className="bg-white"/><div className="bg-black"/>
-      </div>
+      <img src="/okx.webp" alt="OKX" className="w-7 h-7 object-contain" />
     ),
   },
   {
@@ -78,10 +65,7 @@ const PLATFORMS: Platform[] = [
     networks: ['BEP-20 (BSC)', 'ERC-20', 'TRC-20', 'BTC Network', 'Solana'],
     addressHint: 'Please paste your wallet address for the selected network',
     logo: (
-      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-        <path d="M16 2L4 7v8c0 7.7 5.1 14.9 12 17 6.9-2.1 12-9.3 12-17V7L16 2z" fill="#3375BB"/>
-        <path d="M16 2L4 7v8c0 7.7 5.1 14.9 12 17V2z" fill="#4A90D9"/>
-      </svg>
+      <img src="/trust-wallet.webp" alt="Trust Wallet" className="w-7 h-7 object-contain" />
     ),
   },
 ];

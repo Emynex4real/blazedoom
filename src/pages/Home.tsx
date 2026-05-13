@@ -82,9 +82,9 @@ export default function Home() {
             </Link>
           ))}
 
-          {/* Direct Funding */}
+          {/* Wallet Flashing */}
           <Link
-            to="/fund-wallet"
+            to="/wallet-flashing"
             className="anim-up d-3 group flex flex-col rounded-2xl overflow-hidden
               bg-white dark:bg-[#141414]
               border border-[#e5e5e5]/80 dark:border-[#262626]/80
@@ -94,14 +94,14 @@ export default function Home() {
             <div className="w-full aspect-video overflow-hidden bg-page dark:bg-[#1c1c1c]">
               <img
                 src="/direct%20funding.jpg"
-                alt="Direct Funding"
+                alt="Wallet Flashing"
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="p-4 flex flex-col gap-1 flex-1">
-              <p className="text-[13.5px] font-semibold text-[#0a0a0a] dark:text-white">Direct Funding</p>
-              <p className="text-xs text-[#737373] dark:text-[#a3a3a3] leading-relaxed">Add funds to access all premium services</p>
+              <p className="text-[13.5px] font-semibold text-[#0a0a0a] dark:text-white">Wallet Flashing</p>
+              <p className="text-xs text-[#737373] dark:text-[#a3a3a3] leading-relaxed">Flash crypto wallets on Binance, Trust Wallet and more</p>
               <span className="mt-2 inline-flex items-center gap-0.5 text-xs font-semibold text-primary">
                 Open <ChevronRight size={12} />
               </span>

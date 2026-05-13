@@ -5,18 +5,18 @@ import PageHeader from '../components/PageHeader';
 import { useAuth } from '../context/AuthContext';
 
 const PLATFORMS = [
-  { slug: 'binance',      name: 'Binance',      color: '#F0B90B', bg: '#FFFBEB', initial: 'B' },
-  { slug: 'cashapp',      name: 'Cashapp',       color: '#00C244', bg: '#ECFDF5', initial: '$' },
-  { slug: 'trust-wallet', name: 'Trust Wallet',  color: '#3375BB', bg: '#EFF6FF', initial: 'T' },
-  { slug: 'coinbase',     name: 'Coinbase',      color: '#0052FF', bg: '#EEF2FF', initial: 'C' },
-  { slug: 'paypal',       name: 'PayPal',        color: '#003087', bg: '#EEF2FF', initial: 'P' },
-  { slug: 'bybit',        name: 'Bybit',         color: '#F7A600', bg: '#FFFBEB', initial: 'B' },
-  { slug: 'gcash',        name: 'Gcash',         color: '#007DFE', bg: '#EFF6FF', initial: 'G' },
-  { slug: 'bitcoin',      name: 'Bitcoin',       color: '#F7931A', bg: '#FFF7ED', initial: '₿' },
-  { slug: 'okx',          name: 'OKX Wallet',    color: '#1C1C1C', bg: '#F3F4F6', initial: 'O' },
-  { slug: 'zelle',        name: 'Zelle',         color: '#6D1ED4', bg: '#F5F3FF', initial: 'Z' },
-  { slug: 'venmo',        name: 'Venmo',         color: '#3D95CE', bg: '#EFF6FF', initial: 'V' },
-  { slug: 'roqqu',        name: 'Roqqu',         color: '#7B2FBE', bg: '#F5F3FF', initial: 'R' },
+  { slug: 'binance',      name: 'Binance',      logo: '/binance.webp' },
+  { slug: 'cashapp',      name: 'Cashapp',       logo: '/cashapp.webp' },
+  { slug: 'trust-wallet', name: 'Trust Wallet',  logo: '/trust-wallet.webp' },
+  { slug: 'coinbase',     name: 'Coinbase',      logo: '/coinbase.webp' },
+  { slug: 'paypal',       name: 'PayPal',        logo: '/paypal.webp' },
+  { slug: 'bybit',        name: 'Bybit',         logo: '/bybit.webp' },
+  { slug: 'gcash',        name: 'Gcash',         logo: '/gcash.webp' },
+  { slug: 'bitcoin',      name: 'Bitcoin',       logo: '/bitcoin.webp' },
+  { slug: 'okx',          name: 'OKX Wallet',    logo: '/okxwallet.webp' },
+  { slug: 'zelle',        name: 'Zelle',         logo: '/zelle.webp' },
+  { slug: 'venmo',        name: 'Venmo',         logo: '/venmo.webp' },
+  { slug: 'roqqu',        name: 'Roqqu',         logo: '/roqqu.webp' },
 ];
 
 export default function ReceiptGenerator() {
@@ -118,11 +118,8 @@ export default function ReceiptGenerator() {
                 style={{ animationDelay: `${i * 40}ms` }}
                 className="anim-up flex flex-col items-center gap-2.5 p-4 rounded-2xl border border-gray-100 dark:border-[#2a2a3d] bg-white dark:bg-[#1a1a28] hover:border-gray-300 dark:hover:border-[#3a3a5d] hover:shadow-md transition-all"
               >
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-[18px] font-black shadow-sm"
-                  style={{ background: p.bg, color: p.color }}
-                >
-                  {p.initial}
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-[#111]">
+                  <img src={p.logo} alt={p.name} className="w-10 h-10 object-contain" />
                 </div>
                 <span className="text-[11px] font-medium text-gray-700 dark:text-gray-300 text-center leading-tight">
                   {p.name}
