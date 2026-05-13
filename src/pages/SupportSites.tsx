@@ -14,14 +14,14 @@ interface SiteEntry {
 
 // Logo URL Dictionary for easy updating
 const LOGOS = {
-  trustWallet: 'https://cryptologos.cc/logos/trust-wallet-token-twt-logo.png',
-  coinbase: 'https://cryptologos.cc/logos/coinbase-coin-logo.png',
-  cryptoCom: 'https://cryptologos.cc/logos/cronos-cro-logo.png',
-  metaMask: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg',
-  luno: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Luno_Logo.png',
-  binance: 'https://cryptologos.cc/logos/binance-coin-bnb-logo.png',
+  trustWallet: '/trust-wallet.webp',
+  coinbase: '/coinbase.webp',
+  cryptoCom: '/cronos-cro-logo.png',
+  metaMask: '/MetaMask_Fox.svg',
+  luno: '/luno.svg',
+  binance: '/binance.webp',
   phantom: 'https://dl.svgcdn.com/png/cbi/phantom-800.png',
-  exodus: 'https://cryptologos.cc/logos/exodus-ext-logo.png',
+  exodus: '/exodus.jpg',
   ledger: 'https://dl.svgcdn.com/png/token-branded/ledger-800.png'
 };
 

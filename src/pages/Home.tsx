@@ -26,7 +26,7 @@ export default function Home() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
 
       <PageHeader
-        title={isLoggedIn ? `Welcome back` : 'Dashboard'}
+        title={isLoggedIn ? `Welcome back, ${firstName}` : 'Dashboard'}
         subtitle={
           isLoggedIn
             ? 'Manage your sites, receipts, and tracking pages.'
