@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* Main content — offset by sidebar on desktop */}
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-[244px] transition-[margin] duration-300">
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen lg:ml-[244px] transition-[margin] duration-300">
 
         {/* Topbar — visible on both mobile and desktop */}
         <header className="sticky top-0 z-20 h-[60px] flex items-center px-4 sm:px-6 gap-3
@@ -68,7 +68,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 min-w-0 overflow-x-hidden">{children}</main>
       </div>
 
       {/* Message Us FAB */}

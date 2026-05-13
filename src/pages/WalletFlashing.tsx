@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, ChevronRight } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
+import { useAuth } from '../context/AuthContext';
 
 interface Platform {
   id: string;
@@ -85,11 +86,34 @@ const COIN_NETWORKS: Record<string, string[]> = {
   OKT:  ['OKC'],
 };
 
+const COIN_USD: Record<string, number> = {
+  BTC:   67000,
+  ETH:   3500,
+  BNB:   590,
+  USDT:  1,
+  SOL:   170,
+  ADA:   0.45,
+  XRP:   0.52,
+  TRX:   0.12,
+  MATIC: 0.70,
+  USDC:  1,
+  DAI:   1,
+  OKT:   15,
+};
+
 export default function WalletFlashing() {
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
   const [modal, setModal] = useState<Platform | null>(null);
   const [form, setForm] = useState({ amount: '', coin: '', network: '', address: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  const usdValue = (() => {
+    const num = parseFloat(form.amount);
+    if (!num || !form.coin || !COIN_USD[form.coin]) return null;
+    return (num * COIN_USD[form.coin]).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  })();
 
   const openModal = (p: Platform) => {
     if (!p.active) return;
@@ -102,6 +126,10 @@ export default function WalletFlashing() {
 
   const handleFlash = () => {
     if (!form.amount || !form.coin || !form.network || !form.address) return;
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true);
+      return;
+    }
     setSubmitted(true);
     setTimeout(() => setModal(null), 1800);
   };
@@ -158,6 +186,35 @@ export default function WalletFlashing() {
         ))}
       </div>
 
+      {/* Login required prompt */}
+      {showLoginPrompt && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#1a1a28] rounded-2xl shadow-2xl w-full max-w-xs p-6 flex flex-col gap-4">
+            <div className="text-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <p className="font-bold text-gray-900 dark:text-white text-base">Login Required</p>
+              <p className="text-xs text-gray-400 mt-1">You need to be logged in to flash a wallet.</p>
+            </div>
+            <button
+              onClick={() => navigate('/login')}
+              className="w-full py-3 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition-all"
+            >
+              Go to Login
+            </button>
+            <button
+              onClick={() => setShowLoginPrompt(false)}
+              className="w-full py-2.5 text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Modal */}
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -200,6 +257,9 @@ export default function WalletFlashing() {
                       value={form.amount}
                       onChange={e => setForm(f => ({ ...f, amount: e.target.value }))}
                     />
+                    {usdValue && (
+                      <p className="text-xs text-primary mt-1.5 font-medium">≈ {usdValue} USD</p>
+                    )}
                   </div>
 
                   {/* Coin Type */}

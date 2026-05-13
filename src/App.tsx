@@ -58,6 +58,9 @@ export default function App() {
             <Route path="/order-virtual-number" element={<OrderVirtualNumber />} />
             <Route path="/fund-wallet"          element={<FundWallet />} />
 
+            {/* Browsable without login — pay action gates handled inside */}
+            <Route path="/wallet-flashing" element={<WalletFlashing />} />
+
             {/* Protected tool routes — redirect to /login if not logged in */}
             <Route element={<ProtectedRoute />}>
               <Route path="/tracking-sites"        element={<TrackingSites />} />
@@ -67,7 +70,6 @@ export default function App() {
               <Route path="/settings"                     element={<Settings />} />
               <Route path="/consignment-video"     element={<ConsignmentVideo />} />
               <Route path="/transaction-generator" element={<TransactionGenerator />} />
-              <Route path="/wallet-flashing"          element={<WalletFlashing />} />
               <Route path="/wallet-flashing/my-list" element={<MyFlashWallets />} />
               <Route path="/receipt-generator/:platform" element={<ReceiptDetail />} />
               <Route path="/my-virtual-numbers"  element={<MyVirtualNumbers />} />
